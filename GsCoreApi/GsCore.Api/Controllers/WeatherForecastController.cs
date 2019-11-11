@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GsCore.Database.Entities;
+using GsCore.Database.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -13,25 +14,26 @@ namespace GsCore.Api.Controllers
     public class WeatherForecastController : ControllerBase
     {
 
-        protected readonly GsDbContext _context;
+      
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private IGenresRepository _genresRepository;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, GsDbContext context)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IGenresRepository genresRepository)
         {
+            _genresRepository = genresRepository;
             _logger = logger;
-            _context = context;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
 
-            var genres = _context.Genre.ToList();
+            var genres = _genresRepository.GetGenres();
 
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
