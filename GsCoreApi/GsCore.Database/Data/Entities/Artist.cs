@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace GsCore.Database.Data.Entities
+{
+    public partial class Artist
+    {
+        public Artist()
+        {
+            Album = new HashSet<Album>();
+        }
+
+        public int Id { get; set; }
+        public string ArtistName { get; set; }
+        public string YearActive { get; set; }
+        public string Biography { get; set; }
+        public string ThumbnailTag { get; set; }
+        public string SmallThumbnail { get; set; }
+        public string LargeThumbnail { get; set; }
+
+        public virtual ArtistBasicInfo ArtistBasicInfo { get; set; }
+        public virtual ICollection<Album> Album { get; set; }
+    }
+}

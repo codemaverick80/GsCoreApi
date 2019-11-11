@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29503.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GsCore.Api", "GsCore.Api\GsCore.Api.csproj", "{B9656866-643C-40B0-9817-9CD5B01CD74A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GsCore.Database", "GsCore.Database\GsCore.Database.csproj", "{8F6C8438-ACEA-4104-ACED-F689976AD0EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9656866-643C-40B0-9817-9CD5B01CD74A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9656866-643C-40B0-9817-9CD5B01CD74A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9656866-643C-40B0-9817-9CD5B01CD74A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9656866-643C-40B0-9817-9CD5B01CD74A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F6C8438-ACEA-4104-ACED-F689976AD0EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F6C8438-ACEA-4104-ACED-F689976AD0EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F6C8438-ACEA-4104-ACED-F689976AD0EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F6C8438-ACEA-4104-ACED-F689976AD0EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F7E632EF-9A74-4A7A-9FF6-39E75F6AC597}
+	EndGlobalSection
+EndGlobal
