@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace GsCore.Database.Data.Entities
+namespace GsCore.Database.Entities
 {
     public partial class OrderDetail
     {

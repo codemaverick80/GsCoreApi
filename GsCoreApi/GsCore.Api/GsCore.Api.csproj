@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GsCore.Database\GsCore.Database.csproj" />
   </ItemGroup>
 
 </Project>

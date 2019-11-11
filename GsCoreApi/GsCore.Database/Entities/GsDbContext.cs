@@ -1,16 +1,14 @@
-﻿using System;
+﻿using System.IO;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
-namespace GsCore.Database.Data.Entities
+namespace GsCore.Database.Entities
 {
-    public partial class MusicDbContext : DbContext
+    public class GsDbContext : DbContext
     {
-        public MusicDbContext()
-        {
-        }
-
-        public MusicDbContext(DbContextOptions<MusicDbContext> options)
+       
+        public GsDbContext(DbContextOptions<GsDbContext> options)
             : base(options)
         {
         }
@@ -26,12 +24,20 @@ namespace GsCore.Database.Data.Entities
         public virtual DbSet<OrderDetail> OrderDetail { get; set; }
         public virtual DbSet<Track> Track { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<GsDbContext>
         {
-            if (!optionsBuilder.IsConfigured)
+            public GsDbContext CreateDbContext(string[] args)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=MACBOOKPRO-WIN1\\SQLEXPRESS;Database=GeetSangeet_DEV;Persist Security Info=True;User ID=sa;Password=Password@1;");
+                ////Microsoft.Extensions.Configuration.FileExtensions
+                ////Microsoft.Extensions.Configuration.Json
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile(@Directory.GetCurrentDirectory() + "/../GsCore.Api/appsettings.json")
+                    .Build();
+                var builder = new DbContextOptionsBuilder<GsDbContext>();
+                var connectionString = configuration.GetConnectionString("DatabaseConnection");
+                builder.UseSqlServer(connectionString);
+                return new GsDbContext(builder.Options);
             }
         }
 
@@ -83,12 +89,8 @@ namespace GsCore.Database.Data.Entities
 
             modelBuilder.Entity<ArtistBasicInfo>(entity =>
             {
-                entity.HasNoKey();
-
-                entity.HasIndex(e => e.ArtistId)
-                    .HasName("UQ__ArtistBa__25706B51A6736609")
-                    .IsUnique();
-
+                entity.HasKey(e => e.ArtistId);
+                
                 entity.Property(e => e.AlsoKnownAs).HasMaxLength(500);
 
                 entity.Property(e => e.Born).HasMaxLength(100);
@@ -197,10 +199,6 @@ namespace GsCore.Database.Data.Entities
                     .HasForeignKey(d => d.AlbumId)
                     .HasConstraintName("FK_Track_ToAlbum");
             });
-
-            OnModelCreatingPartial(modelBuilder);
         }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
