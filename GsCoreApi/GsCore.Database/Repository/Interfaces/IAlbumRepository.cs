@@ -39,5 +39,11 @@ namespace GsCore.Database.Repository.Interfaces
         /// <param name="pageSize">default 5</param>
         /// <returns></returns>
         IEnumerable<Album> GetAlbums(bool includeTracks = false, int pageIndex = 1, int pageSize = 5);
+
+
+        Task<IEnumerable<Album>> GetAlbumAsync(int artistId);
+
+        Task<Album> GetAlbumAsync(int artistId, int albumId);
+
     }
 }

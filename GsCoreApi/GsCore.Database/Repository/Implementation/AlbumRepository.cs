@@ -69,7 +69,30 @@ namespace GsCore.Database.Repository.Implementation
 
             return result.ToList();
         }
-        
+
+
+        public async Task<IEnumerable<Album>> GetAlbumAsync(int artistId)
+        {
+            IQueryable<Album> query = FindAll();
+           
+            //Query it
+            var result = query
+                .Where(a=>a.ArtistId==artistId)
+                .OrderBy(a => a.Id);
+            return await result.ToListAsync();
+        }
+
+
+        public async Task<Album> GetAlbumAsync(int artistId, int albumId)
+        {
+            IQueryable<Album> query = FindAll();
+
+            //Query it
+            var result = query
+                .Where(a => a.ArtistId == artistId && a.Id==albumId);
+            return await result.SingleOrDefaultAsync();
+        }
+
         #region "Disposing"
 
         public void Dispose()

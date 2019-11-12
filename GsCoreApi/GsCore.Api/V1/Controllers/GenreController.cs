@@ -12,7 +12,7 @@ namespace GsCore.Api.V1.Controllers
     public class GenreController : ControllerBase
     {
         private readonly IGenresRepository _genresRepository;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
 
         public GenreController(IGenresRepository genresRepository, IMapper mapper)
         {

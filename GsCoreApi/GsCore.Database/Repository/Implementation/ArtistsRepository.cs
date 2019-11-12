@@ -76,6 +76,14 @@ namespace GsCore.Database.Repository.Implementation
             return result.ToList();
         }
 
+
+        public bool ArtistExists(int artistId)
+        {
+           return _context.Artist.Any(a => a.Id == artistId);
+        }
+
+
+
         #region "Disposing"
 
         public void Dispose()
@@ -96,10 +104,12 @@ namespace GsCore.Database.Repository.Implementation
             }
         }
 
+       
+
 
         #endregion
-        
-        
+
+
         //public async Task<IEnumerable<Artists>> GetArtistsWithAlbumsAsync(int pageIndex=1, int pageSize=10)
         //{
         //    return await FindAll()
@@ -110,6 +120,6 @@ namespace GsCore.Database.Repository.Implementation
         //        .Take(pageSize)                
         //        .ToListAsync();            
         //}
-        
+
     }
 }

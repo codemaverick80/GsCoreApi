@@ -42,5 +42,9 @@ namespace GsCore.Database.Repository.Interfaces
         IEnumerable<Artist> GetArtists(bool includeAlbums = false, int pageIndex = 1, int pageSize = 5);
 
 
+
+        bool ArtistExists(int artistId);
+
+
     }
 }
