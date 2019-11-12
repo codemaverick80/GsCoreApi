@@ -63,10 +63,10 @@ namespace GsCore.Database.Repository.Implementation
         //   return( await _context.SaveChangesAsync())>0;
         //}
 
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
+        //public async Task SaveChangesAsync()
+        //{
+        //    await _context.SaveChangesAsync();
+        //}
 
     }
 

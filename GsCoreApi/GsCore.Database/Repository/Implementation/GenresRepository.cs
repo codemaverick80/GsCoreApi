@@ -87,7 +87,10 @@ namespace GsCore.Database.Repository.Implementation
             return result.ToList();
         }
 
-
+        /// <summary>
+        /// Returns true only if at least one row was changed.
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> SaveChangesAsync()
         {
             // return true if 1 or more entities were changed

@@ -82,11 +82,8 @@ namespace GsCore.Database.Repository.Implementation
         {
             if (disposing)
             {
-                if (_context != null)
-                {
-                    _context.Dispose();
-                    //_context = null;
-                }
+                _context?.Dispose();
+                //_context = null;
             }
         }
 
