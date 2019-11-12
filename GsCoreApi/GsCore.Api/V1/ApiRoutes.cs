@@ -1,4 +1,4 @@
-﻿namespace GsCore.Api.Contracts.v1
+﻿namespace GsCore.Api.V1
 {
     public static class ApiRoutes
     {

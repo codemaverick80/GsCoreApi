@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace GsCore.Api.Contracts.v2.Responses
+﻿namespace GsCore.Api.V2.Contracts.Responses
 {
     public class GenreGetResponse
     {

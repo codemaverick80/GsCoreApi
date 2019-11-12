@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using GsCore.Api.Contracts.v1.Requests;
-using GsCore.Api.Contracts.v1.Responses;
+using GsCore.Api.V1.Contracts.Requests;
+using GsCore.Api.V1.Contracts.Responses;
 using GsCore.Database.Entities;
 
-namespace GsCore.Api.MappingProfiles.v1
+namespace GsCore.Api.V1.MappingProfiles
 {
     public class EntitiesToModelsProfile: Profile
     {

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using GsCore.Api.Contracts.v2.Requests;
-using GsCore.Api.Contracts.v2.Responses;
+﻿using AutoMapper;
+using GsCore.Api.V2.Contracts.Requests;
+using GsCore.Api.V2.Contracts.Responses;
 using GsCore.Database.Entities;
 
-namespace GsCore.Api.MappingProfiles.v2
+namespace GsCore.Api.V2.MappingProfiles
 {
     public class EntitiesToModelsProfile : Profile
     {
