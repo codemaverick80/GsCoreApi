@@ -55,12 +55,10 @@ namespace GsCore.Api.V1.MappingProfiles
             
             
             CreateMap<Genre, GenreCreateRequest>()
-                .ForMember(dest => dest.Id, source => source.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => src.GenreName))
                 .ForMember(dest => dest.Description, source => source.MapFrom(src => src.Description));
 
             CreateMap<GenreCreateRequest, Genre>()
-                .ForMember(dest => dest.Id, source => source.MapFrom(src => src.Id))
                 .ForMember(dest => dest.GenreName, source => source.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Description, source => source.MapFrom(src => src.Description));
 

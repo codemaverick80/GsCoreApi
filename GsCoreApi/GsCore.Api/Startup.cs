@@ -91,6 +91,7 @@ namespace GsCore.Api
             //services.AddScoped<IAlbumRepository, AlbumRepository>();
 
             services.AddScoped<IAlbumRepository, AlbumRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
 
 
 

@@ -16,20 +16,22 @@ namespace GsCore.Api.Services.Repository
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<Album> GetAlbumAsync(int albumId)
-        {
-            IQueryable<Album> query = _context.Set<Album>();
+        //public async Task<Album> GetAlbumAsync(int albumId)
+        //{
+        //    IQueryable<Album> query = _context.Set<Album>();
             
-            //// Build Query
-            var result = query.Where(a => a.Id == albumId);
+        //    //// Build Query
+        //    var result = query.Where(a => a.Id == albumId);
 
 
-            //// execute query and return the result
-            return await result.FirstOrDefaultAsync();
+        //    //// execute query and return the result
+        //    return await result.FirstOrDefaultAsync();
 
-        }
+        //}
 
-        public async Task<IEnumerable<Album>> GetAlbumsAsync(int artistId)
+
+
+        public async Task<IEnumerable<Album>> GetAlbumsByArtistAsync(int artistId)
         {
             IQueryable<Album> query = _context.Set<Album>();
 
@@ -40,16 +42,27 @@ namespace GsCore.Api.Services.Repository
             return await result.ToListAsync();
         }
 
-        public async Task<Album> GetAlbumsAsync(int artistId, int albumId)
+        public async Task<Album> GetAlbumByArtistAndAlbumAsync(int artistId, int albumId)
         {
             IQueryable<Album> query = _context.Set<Album>();
 
             //// Build Query
-            var result = query.Where(a => a.ArtistId == artistId && a.Id==albumId);
+            var result = query.Where(a => a.ArtistId == artistId && a.Id == albumId);
 
             //// execute query and return the result
             return await result.FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<Album>> GetAlbumsByGenreAsync(int genreId)
+        {
+            IQueryable<Album> query = _context.Set<Album>();
+
+            var result = query.Where(a => a.GenreId == genreId);
+
+            return await query.ToListAsync();
+        }
+
+       
 
         public async Task<bool> SaveAsync()
         {
@@ -95,13 +108,6 @@ namespace GsCore.Api.Services.Repository
                 _context?.Dispose();
             }
         }
-
-        
-
-
-
-
-
 
         #endregion
 

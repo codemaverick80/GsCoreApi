@@ -6,7 +6,7 @@
         const string Version = "v1";
         const string Base = Root + "/" + Version; //  api/v1
 
-        public static class Genre
+        public static class GenresRoute
         {
             /// <summary>
             /// GET: api/v1/genres

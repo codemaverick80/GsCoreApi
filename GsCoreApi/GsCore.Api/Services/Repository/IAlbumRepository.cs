@@ -8,13 +8,18 @@ namespace GsCore.Api.Services.Repository
     public interface IAlbumRepository:IDisposable
     {
 
-      Task<IEnumerable<Album>> GetAlbumsAsync(int artistId);
+      Task<IEnumerable<Album>> GetAlbumsByArtistAsync(int artistId);
 
-      Task<Album> GetAlbumsAsync(int artistId,int albumId);
+      Task<Album> GetAlbumByArtistAndAlbumAsync(int artistId,int albumId);
 
-     Task<Album> GetAlbumAsync(int albumId);
+      Task<IEnumerable<Album>> GetAlbumsByGenreAsync(int genreId);
+
+     //Task<Album> GetAlbumAsync(int albumId);
 
       void AddAlbum(int artistId, int genreId, Album album);
+
+
+
 
       Task<bool> SaveAsync();
 

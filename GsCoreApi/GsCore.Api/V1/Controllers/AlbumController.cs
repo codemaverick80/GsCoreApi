@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GsCore.Api.V1.Controllers
 {
+    ////NOTE: Albums can only be retrieved thru artist, since artist and album has parent/child relation.
     ////Api Endpoint: api/v1/artists/106/albums
     [Route("api/v{api-version:apiVersion}/artists/{artistId}/albums")]
     [ApiController]
@@ -37,7 +38,7 @@ namespace GsCore.Api.V1.Controllers
                 return NotFound();
             }
 
-            var albumsForArtistFromRepo =await _albumRepository.GetAlbumsAsync(artistId);
+            var albumsForArtistFromRepo =await _albumRepository.GetAlbumsByArtistAsync(artistId);
 
             return Ok(_mapper.Map<AlbumGetResponse[]>(albumsForArtistFromRepo));
 
@@ -52,7 +53,7 @@ namespace GsCore.Api.V1.Controllers
                 return NotFound();
             }
 
-            var albumForArtistFromRepo = await _albumRepository.GetAlbumsAsync(artistId, albumId);
+            var albumForArtistFromRepo = await _albumRepository.GetAlbumByArtistAndAlbumAsync(artistId, albumId);
 
             if (albumForArtistFromRepo == null)
             {

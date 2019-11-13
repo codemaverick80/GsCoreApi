@@ -123,7 +123,7 @@ namespace GsCore.Database.Entities
 
             modelBuilder.Entity<Genre>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+               // entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.GenreName)
                     .IsRequired()
