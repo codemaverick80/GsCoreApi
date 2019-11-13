@@ -16,7 +16,7 @@ namespace GsCore.Api.Services.Repository
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<Album> GetAlbum(int albumId)
+        public async Task<Album> GetAlbumAsync(int albumId)
         {
             IQueryable<Album> query = _context.Set<Album>();
             
@@ -29,7 +29,7 @@ namespace GsCore.Api.Services.Repository
 
         }
 
-        public async Task<IEnumerable<Album>> GetAlbums(int artistId)
+        public async Task<IEnumerable<Album>> GetAlbumsAsync(int artistId)
         {
             IQueryable<Album> query = _context.Set<Album>();
 
@@ -39,6 +39,23 @@ namespace GsCore.Api.Services.Repository
             //// execute query and return the result
             return await result.ToListAsync();
         }
+
+        public async Task<Album> GetAlbumsAsync(int artistId, int albumId)
+        {
+            IQueryable<Album> query = _context.Set<Album>();
+
+            //// Build Query
+            var result = query.Where(a => a.ArtistId == artistId && a.Id==albumId);
+
+            //// execute query and return the result
+            return await result.FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> SaveAsync()
+        {
+            return (await _context.SaveChangesAsync() > 0);
+        }
+
 
         public void AddAlbum(int artistId,int genreId, Album album)
         {
@@ -53,9 +70,10 @@ namespace GsCore.Api.Services.Repository
         }
 
 
-        public async Task<bool> Save()
+        public bool ArtistExists(int artistId)
         {
-            return ( await _context.SaveChangesAsync() > 0);
+           return _context.Set<Artist>().Any(a => a.Id == artistId);
+            ////return _context.Artist.Any(a => a.Id == artistId);
         }
 
 
@@ -79,6 +97,8 @@ namespace GsCore.Api.Services.Repository
         }
 
         
+
+
 
 
 

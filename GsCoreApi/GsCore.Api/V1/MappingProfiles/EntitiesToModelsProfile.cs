@@ -42,6 +42,10 @@ namespace GsCore.Api.V1.MappingProfiles
             //    .ForMember(dest => dest.AlbumName, source => source.MapFrom(src => src.Name));
 
 
+            //CreateMap<AlbumGetResponse,Album>()
+            //    .ForMember(dest => dest.AlbumName, source => source.MapFrom(src => src.Name));
+
+
             //CreateMap<Tracks, TrackGetResponse>()
             //    .ForMember(dest => dest.TrackId, source => source.MapFrom(src => src.Id));
 

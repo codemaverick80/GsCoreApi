@@ -1,6 +1,4 @@
 using GsCore.Database.Entities;
-using GsCore.Database.Repository.Implementation;
-using GsCore.Database.Repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using AutoMapper;
+using GsCore.Api.Services.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -87,14 +86,14 @@ namespace GsCore.Api
             //// Here all the repository services uses the GsDbContext and GsDBContext is DbContext.
             //// that means we must register these services with scope that is equal to or shorter than DbContext (Scoped life time)
             //// we can not register with Singleton life time which is larger than DbContext life time.
-            services.AddScoped<IGenresRepository, GenresRepository>();
-            services.AddScoped<IArtistRepository, ArtistsRepository>();
+            //services.AddScoped<IGenresRepository, GenresRepository>();
+            //services.AddScoped<IArtistRepository, ArtistsRepository>();
+            //services.AddScoped<IAlbumRepository, AlbumRepository>();
+
             services.AddScoped<IAlbumRepository, AlbumRepository>();
 
 
 
-
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
