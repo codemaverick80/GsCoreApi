@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GsCore.Database.Entities;
 
-namespace GsCore.Api.V1.Services.Repository
+namespace GsCore.Api.Services.Repository
 {
     public interface IAlbumRepository:IDisposable
     {

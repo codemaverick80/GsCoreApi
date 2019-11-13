@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using GsCore.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace GsCore.Api.V1.Services.Repository
+namespace GsCore.Api.Services.Repository
 {
     public class AlbumRepository:IAlbumRepository
     {
