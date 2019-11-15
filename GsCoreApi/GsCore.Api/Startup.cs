@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using AutoMapper;
 using GsCore.Api.Services.Repository;
+using GsCore.Api.Services.Repository.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -92,6 +93,7 @@ namespace GsCore.Api
 
             services.AddScoped<IAlbumRepository, AlbumRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IArtistRepository, ArtistRepository>();
 
 
 

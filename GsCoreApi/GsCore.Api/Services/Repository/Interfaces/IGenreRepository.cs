@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using GsCore.Api.V1;
 using GsCore.Database.Entities;
 
-namespace GsCore.Api.Services.Repository
+namespace GsCore.Api.Services.Repository.Interfaces
 {
    public interface IGenreRepository : IDisposable
    {

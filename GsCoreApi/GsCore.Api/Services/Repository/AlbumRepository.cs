@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GsCore.Api.Services.Repository.Interfaces;
 using GsCore.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,53 +17,48 @@ namespace GsCore.Api.Services.Repository
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        //public async Task<Album> GetAlbumAsync(int albumId)
-        //{
-        //    IQueryable<Album> query = _context.Set<Album>();
-            
-        //    //// Build Query
-        //    var result = query.Where(a => a.Id == albumId);
-
-
-        //    //// execute query and return the result
-        //    return await result.FirstOrDefaultAsync();
-
-        //}
-
-
-
-        public async Task<IEnumerable<Album>> GetAlbumsByArtistAsync(int artistId)
+        public async Task<Album> GetAlbumByIdAsync(int albumId)
         {
             IQueryable<Album> query = _context.Set<Album>();
 
             //// Build Query
-            var result = query.Where(a => a.ArtistId == artistId);
+            var result = query.Where(a => a.Id == albumId);
 
-            //// execute query and return the result
-            return await result.ToListAsync();
-        }
-
-        public async Task<Album> GetAlbumByArtistAndAlbumAsync(int artistId, int albumId)
-        {
-            IQueryable<Album> query = _context.Set<Album>();
-
-            //// Build Query
-            var result = query.Where(a => a.ArtistId == artistId && a.Id == albumId);
 
             //// execute query and return the result
             return await result.FirstOrDefaultAsync();
+
         }
 
-        public async Task<IEnumerable<Album>> GetAlbumsByGenreAsync(int genreId)
+        public async Task<IEnumerable<Album>> GetAlbumsAsync(int pageIndex = 1, int pageSize = 10)
         {
             IQueryable<Album> query = _context.Set<Album>();
 
-            var result = query.Where(a => a.GenreId == genreId);
+            //Query it
+            var result = query
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize);
 
-            return await query.ToListAsync();
+            return await result.ToListAsync();
         }
 
-       
+
+
+        public async Task<IEnumerable<Track>> GetTracksByAlbumAsync(int albumId)
+        {
+            IQueryable<Track> query = _context.Set<Track>();
+
+            var result = query.Where(t => t.AlbumId == albumId);
+
+            return await result.ToListAsync();
+        }
+
+
+        public bool AlbumExists(int albumId)
+        {
+            return _context.Set<Album>().Any(a => a.Id ==albumId);
+        }
+        
 
         public async Task<bool> SaveAsync()
         {
@@ -82,15 +78,7 @@ namespace GsCore.Api.Services.Repository
             _context.Add(album);
         }
 
-
-        public bool ArtistExists(int artistId)
-        {
-           return _context.Set<Artist>().Any(a => a.Id == artistId);
-            ////return _context.Artist.Any(a => a.Id == artistId);
-        }
-
-
-
+        
         #region "Disposing"
 
         public void Dispose()
@@ -108,6 +96,8 @@ namespace GsCore.Api.Services.Repository
                 _context?.Dispose();
             }
         }
+
+       
 
         #endregion
 

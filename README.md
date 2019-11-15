@@ -10,4 +10,13 @@ Geet Sangeet Web Api.
 
 - Swagger
 
+## Api Endpoints
+- Genres
+
+- Albums
+
+- Artists
+
+- Tracks
+
 

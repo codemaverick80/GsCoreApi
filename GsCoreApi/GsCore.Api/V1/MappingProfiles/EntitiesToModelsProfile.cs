@@ -11,56 +11,46 @@ namespace GsCore.Api.V1.MappingProfiles
         {
 
 
-            //        CreateMap<Artists, ArtistGetResponse>()
-            //                .ForMember(dest=> dest.Born, source=>source.MapFrom(src=> src.ArtistBasicInfo.Born))
-            //                .ForMember(dest => dest.AlsoKnownAs, source => source.MapFrom(src => src.ArtistBasicInfo.Aka))
-            //                .ForMember(dest => dest.Died, source => source.MapFrom(src => src.ArtistBasicInfo.Died))
-            //                //.ForMember(dest => dest.Albums, source => source.MapFrom(src => src.Albums.Select(x =>
-            //                //        new AlbumModel
-            //                //        {
-            //                //            Album = x.Album,
-            //                //            Year = x.Year,
-            //                //            Label = x.Label,
-            //                //            AlbumUrl = x.AlbumUrl,
-            //                //            ThumbnailL = x.ThumbnailL,
-            //                //            ThumbnailM = x.ThumbnailM,
-            //                //            ThumbnailS = x.ThumbnailS,
-            //                //            Rating = x.Rating,
-            //                //            UserRating = x.UserRating
-            //                //        })))
-            //                ;
+            CreateMap<Genre, GenreGetResponse>()
+                .ForMember(dest => dest.Name, source => source.MapFrom(src => src.GenreName));
+           
+            CreateMap<GenreCreateRequest,Genre>()
+                .ForMember(dest => dest.GenreName, source => source.MapFrom(src => src.Name));
+
+            
+
+            CreateMap<Artist, ArtistGetResponse>()
+                .ForMember(dest => dest.Name, source => source.MapFrom(src => src.ArtistName))
+                .ForMember(dest => dest.Born, source => source.MapFrom(src => src.ArtistBasicInfo.Born))
+                .ForMember(dest => dest.Died, source => source.MapFrom(src => src.ArtistBasicInfo.Died))
+                .ForMember(dest => dest.AlsoKnownAs, source => source.MapFrom(src => src.ArtistBasicInfo.AlsoKnownAs));
+
+            CreateMap<ArtistGetResponse, Artist>()
+                .ForMember(dest => dest.ArtistName, source => source.MapFrom(src => src.Name));
 
 
-            ////            CreateMap<Albums, AlbumsModel>()
-            ////                .ForMember(dest=>dest.ReleaseYear,source=>source.MapFrom(src=>src.Year));
 
             CreateMap<Album, AlbumGetResponse>()
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => src.AlbumName));
 
-
-            //CreateMap<AlbumGetResponse,Album>()
-            //    .ForMember(dest => dest.AlbumName, source => source.MapFrom(src => src.Name));
-
-
-            //CreateMap<AlbumGetResponse,Album>()
-            //    .ForMember(dest => dest.AlbumName, source => source.MapFrom(src => src.Name));
+            CreateMap<AlbumGetResponse,Album>()
+                .ForMember(dest => dest.AlbumName, source => source.MapFrom(src => src.Name));
 
 
-            //CreateMap<Tracks, TrackGetResponse>()
-            //    .ForMember(dest => dest.TrackId, source => source.MapFrom(src => src.Id));
-
-            CreateMap<Genre, GenreGetResponse>();
-
-          
+           
             
-            
-            CreateMap<Genre, GenreCreateRequest>()
-                .ForMember(dest => dest.Name, source => source.MapFrom(src => src.GenreName))
-                .ForMember(dest => dest.Description, source => source.MapFrom(src => src.Description));
+            CreateMap<Track, TrackGetResponse>()
+                .ForMember(dest => dest.Name, source => source.MapFrom(src => src.TrackName));
 
-            CreateMap<GenreCreateRequest, Genre>()
-                .ForMember(dest => dest.GenreName, source => source.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Description, source => source.MapFrom(src => src.Description));
+            CreateMap<TrackGetResponse,Track>()
+                .ForMember(dest => dest.TrackName, source => source.MapFrom(src => src.Name));
+
+
+
+
+
+
+
 
         }
 

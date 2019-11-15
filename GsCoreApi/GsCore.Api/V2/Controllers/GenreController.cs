@@ -1,9 +1,7 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
 using GsCore.Api.V2.Contracts.Responses;
-using GsCore.Database.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-
 namespace GsCore.Api.V2.Controllers
 {
     //[ApiController]

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GsCore.Api.Services.Repository.Interfaces;
 using GsCore.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;

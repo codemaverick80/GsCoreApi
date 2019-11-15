@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using GsCore.Api.Services.Repository;
+using GsCore.Api.Services.Repository.Interfaces;
 using GsCore.Api.V1.Contracts.Requests;
 using GsCore.Api.V1.Contracts.Responses;
 using GsCore.Database.Entities;
