@@ -20,7 +20,15 @@ namespace GsCore.Api.Services.Repository
 
         public void AddArtist(Artist artist)
         {
-            throw new NotImplementedException();
+            if (artist == null) { throw new  ArgumentNullException(nameof(artist));}
+            _context.Add(artist);
+        }
+
+        public void AddArtistBasicInfo(ArtistBasicInfo basicInfo)
+        {
+            if (basicInfo == null) { throw new ArgumentNullException(nameof(basicInfo)); }
+            
+            _context.ArtistBasicInfo.Add(basicInfo);
         }
 
         public void Dispose()
@@ -68,9 +76,19 @@ namespace GsCore.Api.Services.Repository
             return await result.ToListAsync();
         }
 
-        public Task<bool> SaveAsync()
+        public async Task<bool> SaveAsync()
         {
-            throw new NotImplementedException();
+            return (await _context.SaveChangesAsync() > 0);
+        }
+
+        public bool ArtistExists(int artistId)
+        {
+            return _context.Set<Artist>().Any(a => a.Id == artistId);
+        }
+
+        public bool ArtistBasicInfoExists(int artistId)
+        {
+            return _context.Set<ArtistBasicInfo>().Any(a => a.ArtistId == artistId);
         }
     }
 }

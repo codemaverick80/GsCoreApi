@@ -11,6 +11,9 @@ namespace GsCore.Api.Services.Repository.Interfaces
         Task<IEnumerable<Artist>> GetArtistsAsync(int pageIndex = 1, int pageSize = 10);
         Task<IEnumerable<Album>> GetAlbumsByArtistAsync(int artistId);
         void AddArtist(Artist artist);
+        void AddArtistBasicInfo(ArtistBasicInfo basicInfo);
         Task<bool> SaveAsync();
+        bool ArtistExists(int artistId);
+        bool ArtistBasicInfoExists(int artistId);
     }
 }

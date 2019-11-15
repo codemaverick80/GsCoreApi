@@ -13,9 +13,10 @@ namespace GsCore.Api.V1.Contracts.Responses
         public string SmallThumbnail { get; set; }
         public string LargeThumbnail { get; set; }
 
-        public string Born { get; set; }
-        public string Died { get; set; }
-        public string AlsoKnownAs { get; set; }
+        public ArtistBasicInfoGetResponse BasicInfo { get; set; }
+        //public string Born { get; set; }
+        //public string Died { get; set; }
+        //public string AlsoKnownAs { get; set; }
 
        
 

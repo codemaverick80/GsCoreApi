@@ -21,13 +21,26 @@ namespace GsCore.Api.V1.MappingProfiles
 
             CreateMap<Artist, ArtistGetResponse>()
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => src.ArtistName))
-                .ForMember(dest => dest.Born, source => source.MapFrom(src => src.ArtistBasicInfo.Born))
-                .ForMember(dest => dest.Died, source => source.MapFrom(src => src.ArtistBasicInfo.Died))
-                .ForMember(dest => dest.AlsoKnownAs, source => source.MapFrom(src => src.ArtistBasicInfo.AlsoKnownAs));
+                .ForMember(dest => dest.BasicInfo, source => source.MapFrom(src => src.ArtistBasicInfo));
 
             CreateMap<ArtistGetResponse, Artist>()
-                .ForMember(dest => dest.ArtistName, source => source.MapFrom(src => src.Name));
+                .ForMember(dest => dest.ArtistName, source => source.MapFrom(src => src.Name))
+                .ForMember(dest => dest.ArtistBasicInfo, source => source.MapFrom(src => src.BasicInfo)); ;
 
+             CreateMap<ArtistBasicInfo, ArtistBasicInfoGetResponse>();
+             CreateMap<ArtistBasicInfoGetResponse,ArtistBasicInfo>();
+
+            CreateMap<ArtistBasicInfo, ArtistBasicInfoCreateRequest>();
+            CreateMap<ArtistBasicInfoCreateRequest,ArtistBasicInfo>();
+
+
+            CreateMap<Artist, ArtistCreateRequest>()
+                .ForMember(dest => dest.Name, source => source.MapFrom(src => src.ArtistName))
+                .ForMember(dest => dest.BasicInfo, source => source.MapFrom(src => src.ArtistBasicInfo));
+
+            CreateMap<ArtistCreateRequest,Artist>()
+                .ForMember(dest => dest.ArtistName, source => source.MapFrom(src => src.Name))
+                .ForMember(dest => dest.ArtistBasicInfo, source => source.MapFrom(src => src.BasicInfo));
 
 
             CreateMap<Album, AlbumGetResponse>()
