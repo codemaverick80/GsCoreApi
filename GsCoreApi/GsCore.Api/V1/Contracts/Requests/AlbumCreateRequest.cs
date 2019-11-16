@@ -1,9 +1,10 @@
-﻿namespace GsCore.Api.V1.Contracts.Requests
+﻿using System.Collections.Generic;
+
+namespace GsCore.Api.V1.Contracts.Requests
 {
     public class AlbumCreateRequest
     {
-
-        public int Id { get; set; }
+       
         public string Name { get; set; }
         public int ArtistId { get; set; }
         public int GenreId { get; set; }
@@ -16,5 +17,7 @@
         public string LargeThumbnail { get; set; }
         public string AlbumUrl { get; set; }
 
+        public ICollection<TrackCreateRequest> Tracks { get; set; }=new List<TrackCreateRequest>();
+    
     }
 }

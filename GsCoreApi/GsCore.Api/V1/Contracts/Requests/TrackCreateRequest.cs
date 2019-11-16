@@ -7,7 +7,7 @@ namespace GsCore.Api.V1.Contracts.Requests
 {
     public class TrackCreateRequest
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public string Name { get; set; }
         public int? AlbumId { get; set; }
         public string Composer { get; set; }

@@ -29,6 +29,11 @@ namespace GsCore.Api.V1.Controllers
         public async Task<ActionResult<ArtistGetResponse[]>> GetArtists()
         {
             var artistEntity = await _artistRepository.GetArtistsAsync();
+            if (!artistEntity.Any())
+            {
+                return NotFound();
+
+            }
             return Ok(_mapper.Map<ArtistGetResponse[]>(artistEntity));
         }
 
@@ -37,6 +42,10 @@ namespace GsCore.Api.V1.Controllers
         {
 
             var artistEntity = await _artistRepository.GetArtistsAsync(artistId);
+            if (artistEntity == null)
+            {
+                return NotFound();
+            }
             return Ok(_mapper.Map<ArtistGetResponse>(artistEntity));
         }
 
@@ -44,9 +53,6 @@ namespace GsCore.Api.V1.Controllers
         [HttpPost]
         public async Task<ActionResult<ArtistGetResponse>> CreateArtist([FromBody]ArtistCreateRequest artist)
         {
-
-
-
             var artistEntity = _mapper.Map<Artist>(artist);
            
             _artistRepository.AddArtist(artistEntity);

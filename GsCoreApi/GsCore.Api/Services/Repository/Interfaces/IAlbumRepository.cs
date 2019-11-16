@@ -9,7 +9,9 @@ namespace GsCore.Api.Services.Repository.Interfaces
       Task<Album> GetAlbumByIdAsync(int albumId);
       Task<IEnumerable<Album>> GetAlbumsAsync(int pageIndex = 1, int pageSize = 10);
       Task<IEnumerable<Track>> GetTracksByAlbumAsync(int albumId);
-      void AddAlbum(int artistId, int genreId, Album album);
+     // void AddAlbum(int artistId, int genreId, Album album);
+      void AddAlbum(Album album);
+      void AddTrackToAlbum(Track track);
       Task<bool> SaveAsync();
       bool AlbumExists(int albumId);
     }

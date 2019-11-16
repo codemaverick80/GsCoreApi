@@ -66,18 +66,37 @@ namespace GsCore.Api.Services.Repository
         }
 
 
-        public void AddAlbum(int artistId,int genreId, Album album)
+        //public void AddAlbum(int artistId,int genreId, Album album)
+        //{
+        //    if (album == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(album));
+        //    }
+
+        //    album.ArtistId = artistId;
+        //    album.GenreId = genreId;
+        //    _context.Add(album);
+        //}
+
+        public void AddAlbum(Album album)
         {
             if (album == null)
             {
                 throw new ArgumentNullException(nameof(album));
             }
-
-            album.ArtistId = artistId;
-            album.GenreId = genreId;
             _context.Add(album);
         }
 
+
+        public void AddTrackToAlbum(Track track)
+        {
+            if (track == null)
+            {
+                throw new ArgumentNullException(nameof(track));
+            }
+            _context.Add(track);
+
+        }
         
         #region "Disposing"
 

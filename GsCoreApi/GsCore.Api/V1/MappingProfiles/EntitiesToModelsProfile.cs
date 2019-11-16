@@ -9,15 +9,11 @@ namespace GsCore.Api.V1.MappingProfiles
     {
         public EntitiesToModelsProfile()
         {
-
-
             CreateMap<Genre, GenreGetResponse>()
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => src.GenreName));
            
             CreateMap<GenreCreateRequest,Genre>()
                 .ForMember(dest => dest.GenreName, source => source.MapFrom(src => src.Name));
-
-            
 
             CreateMap<Artist, ArtistGetResponse>()
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => src.ArtistName))
@@ -27,12 +23,11 @@ namespace GsCore.Api.V1.MappingProfiles
                 .ForMember(dest => dest.ArtistName, source => source.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ArtistBasicInfo, source => source.MapFrom(src => src.BasicInfo)); ;
 
-             CreateMap<ArtistBasicInfo, ArtistBasicInfoGetResponse>();
-             CreateMap<ArtistBasicInfoGetResponse,ArtistBasicInfo>();
+            CreateMap<ArtistBasicInfo, ArtistBasicInfoGetResponse>();
+            CreateMap<ArtistBasicInfoGetResponse,ArtistBasicInfo>();
 
             CreateMap<ArtistBasicInfo, ArtistBasicInfoCreateRequest>();
             CreateMap<ArtistBasicInfoCreateRequest,ArtistBasicInfo>();
-
 
             CreateMap<Artist, ArtistCreateRequest>()
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => src.ArtistName))
@@ -42,16 +37,18 @@ namespace GsCore.Api.V1.MappingProfiles
                 .ForMember(dest => dest.ArtistName, source => source.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ArtistBasicInfo, source => source.MapFrom(src => src.BasicInfo));
 
-
             CreateMap<Album, AlbumGetResponse>()
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => src.AlbumName));
 
             CreateMap<AlbumGetResponse,Album>()
                 .ForMember(dest => dest.AlbumName, source => source.MapFrom(src => src.Name));
 
+            CreateMap<Album, AlbumCreateRequest>()
+                .ForMember(dest => dest.Name, source => source.MapFrom(src => src.AlbumName));
 
-           
-            
+            CreateMap<AlbumCreateRequest, Album>()
+                .ForMember(dest => dest.AlbumName, source => source.MapFrom(src => src.Name));
+
             CreateMap<Track, TrackGetResponse>()
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => src.TrackName));
 
@@ -59,7 +56,11 @@ namespace GsCore.Api.V1.MappingProfiles
                 .ForMember(dest => dest.TrackName, source => source.MapFrom(src => src.Name));
 
 
+            CreateMap<Track, TrackCreateRequest>()
+                .ForMember(dest => dest.Name, source => source.MapFrom(src => src.TrackName));
 
+            CreateMap<TrackCreateRequest,Track>()
+                .ForMember(dest => dest.TrackName, source => source.MapFrom(src => src.Name));
 
 
 

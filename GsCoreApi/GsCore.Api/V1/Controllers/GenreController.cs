@@ -27,6 +27,11 @@ namespace GsCore.Api.V1.Controllers
         public async Task<ActionResult<GenreGetResponse[]>> Get()
         {
             var result = await _genreRepository.GetGenres();
+            if (!result.Any())
+            {
+                return NotFound();
+            }
+
             //return _mapper.Map<GenreGetResponse[]>(result);
             return Ok(_mapper.Map<GenreGetResponse[]>(result));
 
