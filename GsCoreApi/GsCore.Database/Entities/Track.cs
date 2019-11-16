@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public string TrackName { get; set; }
-        public int? AlbumId { get; set; }
+        public int AlbumId { get; set; }
         public string Composer { get; set; }
         public string Performer { get; set; }
         public string Featuring { get; set; }
