@@ -6,7 +6,6 @@ namespace GsCore.Database.Entities
     {
         public Album()
         {
-            Inventory = new HashSet<Inventory>();
             Track = new HashSet<Track>();
         }
 
@@ -25,7 +24,7 @@ namespace GsCore.Database.Entities
 
         public virtual Artist Artist { get; set; }
         public virtual Genre Genre { get; set; }
-        public virtual ICollection<Inventory> Inventory { get; set; }
+        public virtual Inventory Inventory { get; set; }
         public virtual ICollection<Track> Track { get; set; }
     }
 }
