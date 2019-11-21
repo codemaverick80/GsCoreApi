@@ -10,9 +10,9 @@ namespace GsCore.Api.Services.Repository.Interfaces
 
      Task<IEnumerable<Genre>>  GetGenres();
 
-     Task<Genre> GetGenre(int genreId);
+     Task<Genre> GetGenre(Guid genreId);
 
-     Task<IEnumerable<Album>> GetAlbumsByGenre(int genreId);
+     Task<IEnumerable<Album>> GetAlbumsByGenre(Guid genreId);
 
      void AddGenre(Genre genre);
 

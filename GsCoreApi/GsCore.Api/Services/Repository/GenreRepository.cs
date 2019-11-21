@@ -18,7 +18,7 @@ namespace GsCore.Api.Services.Repository
             _context = context?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<Album>> GetAlbumsByGenre(int genreId)
+        public async Task<IEnumerable<Album>> GetAlbumsByGenre(Guid genreId)
         {
             IQueryable<Album> query = _context.Set<Album>();
 
@@ -27,7 +27,7 @@ namespace GsCore.Api.Services.Repository
             return await result.ToListAsync();
         }
 
-        public async Task<Genre> GetGenre(int genreId)
+        public async Task<Genre> GetGenre(Guid genreId)
         {
             IQueryable<Genre> query = _context.Set<Genre>();
 

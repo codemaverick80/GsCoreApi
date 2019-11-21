@@ -44,7 +44,7 @@ namespace GsCore.Api.Services.Repository
             }
         }
 
-        public async Task<IEnumerable<Album>> GetAlbumsByArtistAsync(int artistId)
+        public async Task<IEnumerable<Album>> GetAlbumsByArtistAsync(Guid artistId)
         {
             IQueryable<Album> query = _context.Set<Album>();
 
@@ -53,7 +53,7 @@ namespace GsCore.Api.Services.Repository
             return await result.ToListAsync();
         }
 
-        public async Task<Artist> GetArtistsAsync(int artistId)
+        public async Task<Artist> GetArtistsAsync(Guid artistId)
         {
             IQueryable<Artist> query = _context.Set<Artist>();
 
@@ -81,12 +81,12 @@ namespace GsCore.Api.Services.Repository
             return (await _context.SaveChangesAsync() > 0);
         }
 
-        public bool ArtistExists(int artistId)
+        public bool ArtistExists(Guid artistId)
         {
             return _context.Set<Artist>().Any(a => a.Id == artistId);
         }
 
-        public bool ArtistBasicInfoExists(int artistId)
+        public bool ArtistBasicInfoExists(Guid artistId)
         {
             return _context.Set<ArtistBasicInfo>().Any(a => a.ArtistId == artistId);
         }

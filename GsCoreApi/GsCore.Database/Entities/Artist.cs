@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GsCore.Database.Entities
 {
@@ -9,7 +10,7 @@ namespace GsCore.Database.Entities
             Album = new HashSet<Album>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string ArtistName { get; set; }
         public string YearActive { get; set; }
         public string Biography { get; set; }

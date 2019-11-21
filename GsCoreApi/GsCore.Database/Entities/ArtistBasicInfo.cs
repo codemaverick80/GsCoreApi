@@ -1,8 +1,10 @@
-﻿namespace GsCore.Database.Entities
+﻿using System;
+
+namespace GsCore.Database.Entities
 {
     public partial class ArtistBasicInfo
     {
-        public int ArtistId { get; set; }
+        public Guid ArtistId { get; set; }
         public string Born { get; set; }
         public string Died { get; set; }
         public string AlsoKnownAs { get; set; }

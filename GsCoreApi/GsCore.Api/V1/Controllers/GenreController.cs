@@ -1,17 +1,17 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using GsCore.Api.Services.Repository;
+﻿using AutoMapper;
 using GsCore.Api.Services.Repository.Interfaces;
 using GsCore.Api.V1.Contracts.Requests;
 using GsCore.Api.V1.Contracts.Responses;
 using GsCore.Database.Entities;
 using Microsoft.AspNetCore.Mvc;
-
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 namespace GsCore.Api.V1.Controllers
 {
     [ApiController]
-    [Route("api/v{version:apiVersion}/genres")]
+   // [Route("api/v{version:apiVersion}/genres")]
+    [Route(ApiRoutes.GenresRoute.BaseUrl)]
     [ApiVersion("1.0")]
     public class GenreController : ControllerBase
     {
@@ -20,9 +20,11 @@ namespace GsCore.Api.V1.Controllers
 
         public GenreController(IGenreRepository genreRepository, IMapper mapper)
         {
-            _mapper = mapper;
-            _genreRepository = genreRepository;
+            _mapper = mapper?? throw new ArgumentNullException(nameof(mapper));
+            _genreRepository = genreRepository??throw new ArgumentNullException(nameof(genreRepository));
         }
+       
+        
         [HttpGet()]
         public async Task<ActionResult<GenreGetResponse[]>> Get()
         {
@@ -37,17 +39,18 @@ namespace GsCore.Api.V1.Controllers
 
         }
 
-        [HttpGet("{genreId}",Name = "GetGenre")]
-        public async Task<ActionResult<GenreGetResponse>> Get(int genreId)
+        [HttpGet(ApiRoutes.GenresRoute.Get,Name = "GetGenre")]
+        public async Task<ActionResult<GenreGetResponse>> Get(Guid genreId)
         {
             var result = await _genreRepository.GetGenre(genreId);
             if (result == null) return NotFound();
             return Ok(_mapper.Map<GenreGetResponse>(result));
 
         }
-        //api/v1/genres/{genreId}/albums
-        [HttpGet("{genreId}/albums")]
-        public async Task<ActionResult<AlbumGetResponse>> GetAlbumsByGenre(int genreId)
+       
+      
+        [HttpGet(ApiRoutes.GenresRoute.GetAlbumByGenre)]
+        public async Task<ActionResult<AlbumGetResponse>> GetAlbumsByGenre(Guid genreId)
         {
 
             var result = await _genreRepository.GetAlbumsByGenre(genreId);
@@ -61,7 +64,9 @@ namespace GsCore.Api.V1.Controllers
         [HttpPost]
         public async Task<ActionResult<GenreGetResponse>> CreateGenre(GenreCreateRequest genre)
         {
-             var genreEntity = _mapper.Map<Genre>(genre);
+
+            var genreEntity = _mapper.Map<Genre>(genre);
+            genreEntity.Id=Guid.NewGuid();
              _genreRepository.AddGenre(genreEntity);
              await  _genreRepository.SaveAsync();
 
@@ -81,8 +86,6 @@ namespace GsCore.Api.V1.Controllers
                  genreGetResponse);
 
         }
-
-
 
         /// <summary>
         /// Indicate the URL to redirect a page to

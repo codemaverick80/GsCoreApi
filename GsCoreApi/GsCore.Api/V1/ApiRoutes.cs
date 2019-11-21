@@ -1,37 +1,34 @@
-﻿namespace GsCore.Api.V1
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+
+namespace GsCore.Api.V1
 {
     public static class ApiRoutes
     {
         const string Root = "api";
-        const string Version = "v1";
-        const string Base = Root + "/" + Version; //  api/v1
+        const string Version = "v{version:apiVersion}";
+        const string Base = Root + "/" + Version;
 
         public static class GenresRoute
         {
-            /// <summary>
-            /// GET: api/v1/genres
-            /// </summary>
-            public const string GetAll = Base + "/genres";
+            public const string BaseUrl = Base + "/genres";
+            public const string Get = "{genreId}";
+            public const string GetAlbumByGenre = "{genreId}/albums";
+        }
 
-            /// <summary>
-            /// PUT: api/v1/genres/12
-            /// </summary>
-            public const string Update = Base + "/genres/{genreId}";
+        public static class ArtistsRoute
+        {
+            public const string BaseUrl = Base + "/artists";
+            public const string Get = "{artistId}";
+            public const string CreateArtistBasicInfo = "{artistId}/basicInfo";
+        }
 
-            /// <summary>
-            /// DELETE: api/v1/genres/12
-            /// </summary>
-            public const string Delete = Base + "/genres/{genreId}";
+        public static class AlbumsRoute
+        {
+            public const string BaseUrl = Base + "/albums";
+            public const string Get ="{albumId}";
+            public const string GetTrackByAlbum = "{albumId}/tracks";
 
-            /// <summary>
-            /// GET: api/v1/genres/12
-            /// </summary>
-            public const string Get = Base + "/genres/{genreId}";
-
-            /// <summary>
-            /// POST: api/v1/genres
-            /// </summary>
-            public const string Create = Base + "/genres";
+            public const string CreateTrack = "{albumId}/tracks";
         }
     }
 }

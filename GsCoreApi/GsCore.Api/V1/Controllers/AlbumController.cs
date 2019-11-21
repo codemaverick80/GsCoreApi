@@ -17,8 +17,9 @@ using Microsoft.AspNetCore.Mvc;
 */
 namespace GsCore.Api.V1.Controllers
 {
-    //[Route("api/v{api-version:apiVersion}/artists/{artistId}/albums")]
-    [Route("api/v{version:apiVersion}/albums")]
+    
+   // [Route("api/v{version:apiVersion}/albums")]
+    [Route(ApiRoutes.AlbumsRoute.BaseUrl)]
     [ApiController]
     [ApiVersion("1.0")]
     public class AlbumController : ControllerBase
@@ -45,8 +46,9 @@ namespace GsCore.Api.V1.Controllers
             return Ok(_mapper.Map<AlbumGetResponse[]>(albumsEntity));
         }
         
-        [HttpGet("{albumId}",Name = "GetAlbum")]
-        public async Task<ActionResult<AlbumGetResponse>> GetAlbums(int albumId)
+       // [HttpGet("{albumId}",Name = "GetAlbum")]
+        [HttpGet(ApiRoutes.AlbumsRoute.Get,Name= "GetAlbum")]
+        public async Task<ActionResult<AlbumGetResponse>> GetAlbums(Guid albumId)
         {
             var albumsEntity =await _albumRepository.GetAlbumByIdAsync(albumId);
             if (albumsEntity == null)
@@ -57,8 +59,9 @@ namespace GsCore.Api.V1.Controllers
             return Ok(_mapper.Map<AlbumGetResponse>(albumsEntity));
         }
         
-        [HttpGet("{albumId}/tracks",Name = "GetTracksByAlbum")]
-        public async Task<ActionResult<TrackGetResponse[]>> GetTracksByAlbum(int albumId)
+        //[HttpGet("{albumId}/tracks",Name = "GetTracksByAlbum")]
+        [HttpGet(ApiRoutes.AlbumsRoute.GetTrackByAlbum, Name = "GetTracksByAlbum")]
+        public async Task<ActionResult<TrackGetResponse[]>> GetTracksByAlbum(Guid albumId)
         {
             if (!_albumRepository.AlbumExists(albumId))
             {
@@ -84,40 +87,43 @@ namespace GsCore.Api.V1.Controllers
         [HttpPost]
         public async Task<ActionResult<AlbumGetResponse>> CreateAlbum([FromBody]AlbumCreateRequest album)
         {
-            if (album.ArtistId == 0 || album.GenreId == 0)
+            if (album.ArtistId == Guid.Empty || album.GenreId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(album));
             }
 
             var albumEntity = _mapper.Map<Album>(album);
+            albumEntity.Id=Guid.NewGuid();
 
             _albumRepository.AddAlbum(albumEntity);
            await _albumRepository.SaveAsync();
 
-           if (album.Tracks.Any())
-           {
-               foreach (var track in album.Tracks)
-               { 
-                   var trackEntity = _mapper.Map<Track>(track);
-                   trackEntity.AlbumId = albumEntity.Id;
-                   _albumRepository.AddTrackToAlbum(trackEntity);
-               }
-               await _albumRepository.SaveAsync();
-           }
-           var albumResponse = _mapper.Map<AlbumGetResponse>(albumEntity);
+            if (album.Tracks.Any())
+            {
+                foreach (var track in album.Tracks)
+                {
+                    var trackEntity = _mapper.Map<Track>(track);
+                    trackEntity.Id = Guid.NewGuid();
+                    trackEntity.AlbumId = albumEntity.Id;
+                    _albumRepository.AddTrackToAlbum(trackEntity);
+                }
+                await _albumRepository.SaveAsync();
+            }
+            var albumResponse = _mapper.Map<AlbumGetResponse>(albumEntity);
             
            return CreatedAtRoute(
                "GetAlbum",
                new
                {
                    version = HttpContext.GetRequestedApiVersion().ToString(),
-                   albumId = albumResponse.Id
+                   albumId = albumEntity.Id
                },
                albumResponse);
         }
         
-        [HttpPost("{albumId}/tracks")]
-        public async Task<ActionResult<AlbumGetResponse>> CreateTrack(int albumId, [FromBody]ICollection<TrackCreateRequest> tracks)
+       // [HttpPost("{albumId}/tracks")]
+        [HttpPost(ApiRoutes.AlbumsRoute.CreateTrack)]
+        public async Task<ActionResult<AlbumGetResponse>> CreateTrack(Guid albumId, [FromBody]ICollection<TrackCreateRequest> tracks)
         {
             if (!tracks.Any())
             {
@@ -134,6 +140,7 @@ namespace GsCore.Api.V1.Controllers
                 {
                     var trackEntity = _mapper.Map<Track>(track);
                     trackEntity.AlbumId = albumId;
+                    trackEntity.Id=Guid.NewGuid();
                     _albumRepository.AddTrackToAlbum(trackEntity);
                 }
                 await _albumRepository.SaveAsync();
@@ -152,11 +159,22 @@ namespace GsCore.Api.V1.Controllers
 
 
         #region "Update Resourse"
+        //Update Track :api/v1/albums/2/tracks/3
+
+        //Update Album: api/v1/albums/2
+
+
 
         #endregion
 
 
         #region "Delete Resourse"
+
+
+        //Delete Track :api/v1/albums/2/tracks/3
+
+        //Delete Album: api/v1/albums/2
+
 
         #endregion
 

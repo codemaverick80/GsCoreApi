@@ -1,3 +1,4 @@
+using System;
 using GsCore.Database.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,7 @@ namespace GsCore.Api
         public void ConfigureServices(IServiceCollection services)
         {
 
+            //var gid = Guid.NewGuid();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers(setupAction =>

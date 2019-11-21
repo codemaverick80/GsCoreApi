@@ -17,7 +17,7 @@ namespace GsCore.Api.Services.Repository
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<Album> GetAlbumByIdAsync(int albumId)
+        public async Task<Album> GetAlbumByIdAsync(Guid albumId)
         {
             IQueryable<Album> query = _context.Set<Album>();
 
@@ -44,7 +44,7 @@ namespace GsCore.Api.Services.Repository
 
 
 
-        public async Task<IEnumerable<Track>> GetTracksByAlbumAsync(int albumId)
+        public async Task<IEnumerable<Track>> GetTracksByAlbumAsync(Guid albumId)
         {
             IQueryable<Track> query = _context.Set<Track>();
 
@@ -54,7 +54,7 @@ namespace GsCore.Api.Services.Repository
         }
 
 
-        public bool AlbumExists(int albumId)
+        public bool AlbumExists(Guid albumId)
         {
             return _context.Set<Album>().Any(a => a.Id ==albumId);
         }

@@ -3,7 +3,7 @@
     public static class ApiRoutes
     {
         const string Root = "api";
-        const string Version = "v2";
+        const string Version = "v{version:apiVersion}";
         const string Base = Root + "/" + Version; //  api/v1
 
         public static class GenresRoute

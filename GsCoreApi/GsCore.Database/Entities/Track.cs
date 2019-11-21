@@ -1,10 +1,12 @@
-﻿namespace GsCore.Database.Entities
+﻿using System;
+
+namespace GsCore.Database.Entities
 {
     public partial class Track
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string TrackName { get; set; }
-        public int AlbumId { get; set; }
+        public Guid AlbumId { get; set; }
         public string Composer { get; set; }
         public string Performer { get; set; }
         public string Featuring { get; set; }

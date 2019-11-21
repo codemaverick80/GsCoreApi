@@ -10,7 +10,7 @@ namespace GsCore.Database.Entities
             OrderDetail = new HashSet<OrderDetail>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public DateTime? OrderDate { get; set; }
         public string UserName { get; set; }
         public string FirstName { get; set; }

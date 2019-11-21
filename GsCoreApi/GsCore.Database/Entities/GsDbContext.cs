@@ -41,11 +41,12 @@ namespace GsCore.Database.Entities
             }
         }
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Album>(entity =>
             {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.Property(e => e.AlbumName)
                     .IsRequired()
                     .HasMaxLength(200);
@@ -77,6 +78,8 @@ namespace GsCore.Database.Entities
 
             modelBuilder.Entity<Artist>(entity =>
             {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.Property(e => e.ArtistName)
                     .IsRequired()
                     .HasMaxLength(100);
@@ -157,6 +160,8 @@ namespace GsCore.Database.Entities
 
             modelBuilder.Entity<Order>(entity =>
             {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.Property(e => e.AddressLine1).HasMaxLength(100);
 
                 entity.Property(e => e.AddressLine2).HasMaxLength(50);
@@ -184,11 +189,17 @@ namespace GsCore.Database.Entities
 
             modelBuilder.Entity<OrderDetail>(entity =>
             {
+                entity.HasIndex(e => e.InventoryId)
+                    .HasName("UK_ToInventory")
+                    .IsUnique();
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.Property(e => e.UnitPrice).HasColumnType("decimal(18, 0)");
 
                 entity.HasOne(d => d.Inventory)
-                    .WithMany(p => p.OrderDetail)
-                    .HasForeignKey(d => d.InventoryId)
+                    .WithOne(p => p.OrderDetail)
+                    .HasForeignKey<OrderDetail>(d => d.InventoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderDetail_ToInventory");
 
@@ -201,6 +212,8 @@ namespace GsCore.Database.Entities
 
             modelBuilder.Entity<Track>(entity =>
             {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.Property(e => e.Duration).HasMaxLength(20);
 
                 entity.Property(e => e.TrackName)
@@ -214,5 +227,8 @@ namespace GsCore.Database.Entities
                     .HasConstraintName("FK_Track_ToAlbum");
             });
         }
+
+
+
     }
 }
