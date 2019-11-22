@@ -24,7 +24,10 @@ namespace GsCore.Api.V1.Controllers
             _genreRepository = genreRepository??throw new ArgumentNullException(nameof(genreRepository));
         }
        
-        
+        /// <summary>
+        /// Provides genres
+        /// </summary>
+        /// <returns></returns>
         [HttpGet()]
         public async Task<ActionResult<GenreGetResponse[]>> Get()
         {
@@ -39,6 +42,11 @@ namespace GsCore.Api.V1.Controllers
 
         }
 
+        /// <summary>
+        /// Provide genre by id
+        /// </summary>
+        /// <param name="genreId"></param>
+        /// <returns></returns>
         [HttpGet(ApiRoutes.GenresRoute.Get,Name = "GetGenre")]
         public async Task<ActionResult<GenreGetResponse>> Get(Guid genreId)
         {
@@ -48,7 +56,11 @@ namespace GsCore.Api.V1.Controllers
 
         }
        
-      
+      /// <summary>
+      /// Provide list of albums by genre
+      /// </summary>
+      /// <param name="genreId"></param>
+      /// <returns></returns>
         [HttpGet(ApiRoutes.GenresRoute.GetAlbumByGenre)]
         public async Task<ActionResult<AlbumGetResponse>> GetAlbumsByGenre(Guid genreId)
         {
@@ -61,6 +73,11 @@ namespace GsCore.Api.V1.Controllers
 
         }
 
+      /// <summary>
+      /// Creates genre
+      /// </summary>
+      /// <param name="genre"></param>
+      /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<GenreGetResponse>> CreateGenre(GenreCreateRequest genre)
         {

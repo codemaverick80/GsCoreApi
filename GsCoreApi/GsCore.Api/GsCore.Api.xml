@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GsCore.Api</name>
+    </assembly>
+    <members>
+        <member name="P:GsCore.Api.V1.Contracts.Requests.GenreCreateRequest.Name">
+            <summary>
+            Genre Name
+            </summary>
+        </member>
+        <member name="P:GsCore.Api.V1.Contracts.Requests.GenreCreateRequest.Description">
+            <summary>
+            Genre Description
+            </summary>
+        </member>
+        <member name="P:GsCore.Api.V1.Contracts.Responses.GenreGetResponse.Id">
+            <summary>
+            Genre id
+            </summary>
+        </member>
+        <member name="P:GsCore.Api.V1.Contracts.Responses.GenreGetResponse.Name">
+            <summary>
+            Genre Name
+            </summary>
+        </member>
+        <member name="P:GsCore.Api.V1.Contracts.Responses.GenreGetResponse.Description">
+            <summary>
+            Genre Description
+            </summary>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.GetArtists">
+            <summary>
+            Provides artists.
+            </summary>
+            <returns>List of artists</returns>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.GetArtists(System.Guid)">
+            <summary>
+            Provide single artist's detail.
+            </summary>
+            <param name="artistId">artist id</param>
+            <returns>Artist details</returns>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.CreateArtist(GsCore.Api.V1.Contracts.Requests.ArtistCreateRequest)">
+            <summary>
+            Allow api clients to add new artist.
+            </summary>
+            <param name="artist"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.GenreController.Get">
+            <summary>
+            Provides genres
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.GenreController.Get(System.Guid)">
+            <summary>
+            Provide genre by id
+            </summary>
+            <param name="genreId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.GenreController.GetAlbumsByGenre(System.Guid)">
+            <summary>
+            Provide list of albums by genre
+            </summary>
+            <param name="genreId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.GenreController.CreateGenre(GsCore.Api.V1.Contracts.Requests.GenreCreateRequest)">
+            <summary>
+            Creates genre
+            </summary>
+            <param name="genre"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.GenreController.GetResourceUrl(System.String)">
+            <summary>
+            Indicate the URL to redirect a page to
+            </summary>
+            <param name="resourceId">currently created resource id returned from data source.</param>
+            <returns></returns>
+        </member>
+        <member name="F:GsCore.Api.V2.ApiRoutes.GenresRoute.GetAll">
+            <summary>
+            GET: api/v2/genres
+            </summary>
+        </member>
+        <member name="F:GsCore.Api.V2.ApiRoutes.GenresRoute.Update">
+            <summary>
+            PUT: api/v2/genres/12
+            </summary>
+        </member>
+        <member name="F:GsCore.Api.V2.ApiRoutes.GenresRoute.Delete">
+            <summary>
+            DELETE: api/v2/genres/12
+            </summary>
+        </member>
+        <member name="F:GsCore.Api.V2.ApiRoutes.GenresRoute.Get">
+            <summary>
+            GET: api/v2/genres/12
+            </summary>
+        </member>
+        <member name="F:GsCore.Api.V2.ApiRoutes.GenresRoute.Create">
+            <summary>
+            POST: api/v2/genres
+            </summary>
+        </member>
+    </members>
+</doc>

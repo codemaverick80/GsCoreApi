@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using GsCore.Database.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,12 +10,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using System.Reflection;
 using AutoMapper;
 using GsCore.Api.Services.Repository;
 using GsCore.Api.Services.Repository.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.OpenApi.Models;
+
 
 namespace GsCore.Api
 {
@@ -30,25 +35,47 @@ namespace GsCore.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             //var gid = Guid.NewGuid();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers(setupAction =>
             {
                 setupAction.ReturnHttpNotAcceptable = true;
+            })
+            .AddXmlDataContractSerializerFormatters()
+            .ConfigureApiBehaviorOptions(setupAction =>
+                {
+                    setupAction.InvalidModelStateResponseFactory = context =>
+                    {
+                        var problemDetails = new ValidationProblemDetails(context.ModelState)
+                        {
+                            Type="https://gsapi.com/moelvalidationproblem",
+                            Title = "One or more model validation errors occurred",
+                            Status = StatusCodes.Status422UnprocessableEntity,
+                            Detail="See the errors property for details.",
+                            Instance = context.HttpContext.Request.Path
+                        };
 
-            }).AddXmlDataContractSerializerFormatters();
+                        problemDetails.Extensions.Add("TrackId",context.HttpContext.TraceIdentifier);
+
+                        return new UnprocessableEntityObjectResult(problemDetails)
+                        {
+                            ContentTypes = {"application/problem+json"}
+                        };
+
+                    };
+                });
 
 
 
 
             #region "Add Api Versioning Service"
 
-            //services.AddVersionedApiExplorer(setupAction =>
-            //{
-            //    setupAction.GroupNameFormat = "'v'VV";
-            //});
+
+            services.AddVersionedApiExplorer(setupAction =>
+            {
+                setupAction.GroupNameFormat = "'v'VV";
+            });
 
             /* Add api Versioning
               *
@@ -63,23 +90,75 @@ namespace GsCore.Api
             {
                 options.ReportApiVersions = true;
                 options.AssumeDefaultVersionWhenUnspecified = true;
-                ////// options.ApiVersionReader = new HeaderApiVersionReader("x-version");
-                ////options.ApiVersionReader = ApiVersionReader.Combine(
-                ////    new HeaderApiVersionReader("x-version"),
-                ////    new QueryStringApiVersionReader("v")
-                ////    );
                 options.DefaultApiVersion = new ApiVersion(1, 0);
-                ////options.UseApiBehavior = false;
             });
 
 
-            //var apiVersionDescriptionProvider =
-            //    services.BuildServiceProvider().GetService<IApiVersionDescriptionProvider>();
+            var apiVersionDescriptionProvider =
+                services.BuildServiceProvider().GetService<IApiVersionDescriptionProvider>();
+
 
             #endregion
 
 
+            #region "Swagger Service"
 
+            services.AddSwaggerGen(setupAction =>
+             {
+                 foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+                 {
+
+                     setupAction.SwaggerDoc(
+                         $"GsCoreApiSpecification{description.GroupName}",
+                         new OpenApiInfo()
+                         {
+                             Title = "Gs Api",
+                             Version = description.ApiVersion.ToString(),
+                             Description = "Through Gs Api you can access artists and albums information",
+                             Contact = new OpenApiContact()
+                             {
+                                 Email = "gsapi@gmail.com",
+                                 Name = "Gs Api Group",
+                                 Url =new Uri("https://www.gsapi.com")
+                             },
+                             License = new OpenApiLicense()
+                             {
+                                 Name = "MIT License",
+                                 Url =new Uri("https://opensource.org/licenses/MIT")
+                             }
+                         });
+                 }
+                 setupAction.DocInclusionPredicate((documentName, apiDescription) =>
+                 {
+                     var actionApiVersionModel = apiDescription.ActionDescriptor
+                         .GetApiVersionModel(ApiVersionMapping.Explicit | ApiVersionMapping.Implicit);
+
+                     if (actionApiVersionModel == null)
+                     {
+                         return true;
+                     }
+
+                     if (actionApiVersionModel.DeclaredApiVersions.Any())
+                     {
+                         return actionApiVersionModel.DeclaredApiVersions.Any(v =>
+                             $"GsCoreApiSpecificationv{v.ToString()}" == documentName);
+                     }
+
+                     return actionApiVersionModel.ImplementedApiVersions.Any(v =>
+                         $"GsCoreApiSpecificationv{v.ToString()}" == documentName);
+
+
+                 });
+
+
+
+                 var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                 var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+
+                 setupAction.IncludeXmlComments(xmlCommentsFullPath);
+             });
+
+            #endregion
 
             ////services.AddDbContext<GsDbContext> means GsDbContext is register with Scoped life time.
             services.AddDbContext<GsDbContext>(options =>
@@ -89,10 +168,6 @@ namespace GsCore.Api
             //// Here all the repository services uses the GsDbContext and GsDBContext is DbContext.
             //// that means we must register these services with scope that is equal to or shorter than DbContext (Scoped life time)
             //// we can not register with Singleton life time which is larger than DbContext life time.
-            //services.AddScoped<IGenresRepository, GenresRepository>();
-            //services.AddScoped<IArtistRepository, ArtistsRepository>();
-            //services.AddScoped<IAlbumRepository, AlbumRepository>();
-
             services.AddScoped<IAlbumRepository, AlbumRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<IArtistRepository, ArtistRepository>();
@@ -102,7 +177,9 @@ namespace GsCore.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, 
+            IWebHostEnvironment env,
+            IApiVersionDescriptionProvider apiVersionDescriptionProvider)
         {
             if (env.IsDevelopment())
             {
@@ -121,7 +198,27 @@ namespace GsCore.Api
                 });
             }
 
+
             app.UseHttpsRedirection();
+
+
+
+            #region "Swagger & SwaggerUI middleware"
+
+            app.UseSwagger();
+            app.UseSwaggerUI(setupAction =>
+            {
+                foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+                {
+                    setupAction.SwaggerEndpoint($"/swagger/" +
+                                                $"GsCoreApiSpecification{description.GroupName}/swagger.json",
+                                         description.GroupName.ToUpper());
+                }
+
+                setupAction.RoutePrefix = "";
+            });
+
+            #endregion
 
             app.UseRouting();
 
