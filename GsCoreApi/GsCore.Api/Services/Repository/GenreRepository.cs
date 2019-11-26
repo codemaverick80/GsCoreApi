@@ -47,8 +47,7 @@ namespace GsCore.Api.Services.Repository
         {
             return (await _context.SaveChangesAsync() > 0);
         }
-
-
+        
         public void AddGenre(Genre genre)
         {
             if (genre == null)
@@ -57,6 +56,14 @@ namespace GsCore.Api.Services.Repository
             }
             _context.Add(genre);
         }
+
+
+        public void UpdateGenre(Genre genre)
+        {
+            //no code implemented
+        }
+
+
 
 
         public void Dispose()

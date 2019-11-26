@@ -17,5 +17,8 @@ namespace GsCore.Api.Services.Repository.Interfaces
      void AddGenre(Genre genre);
 
      Task<bool> SaveAsync();
-    }
+
+
+     void UpdateGenre(Genre genre);
+   }
 }

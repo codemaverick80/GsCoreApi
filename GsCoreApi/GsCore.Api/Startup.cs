@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 
 
 namespace GsCore.Api
@@ -42,7 +43,13 @@ namespace GsCore.Api
             {
                 setupAction.ReturnHttpNotAcceptable = true;
             })
+            //START - Added NewtonsoftJson for PATCH request
+            .AddNewtonsoftJson(setupAction =>
+            {
+                setupAction.SerializerSettings.ContractResolver=new CamelCasePropertyNamesContractResolver();
+            })
             .AddXmlDataContractSerializerFormatters()
+            //END - Added NewtonsoftJson for PATCH request
             .ConfigureApiBehaviorOptions(setupAction =>
                 {
                     setupAction.InvalidModelStateResponseFactory = context =>

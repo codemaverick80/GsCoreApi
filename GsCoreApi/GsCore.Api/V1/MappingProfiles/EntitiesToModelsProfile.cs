@@ -15,6 +15,14 @@ namespace GsCore.Api.V1.MappingProfiles
             CreateMap<GenreCreateRequest,Genre>()
                 .ForMember(dest => dest.GenreName, source => source.MapFrom(src => src.Name));
 
+
+            CreateMap<GenreUpdateRequest,Genre>()
+                .ForMember(dest => dest.GenreName, source => source.MapFrom(src => src.Name));
+            CreateMap<Genre,GenreUpdateRequest>()
+                .ForMember(dest => dest.Name, source => source.MapFrom(src => src.GenreName));
+
+
+
             CreateMap<Artist, ArtistGetResponse>()
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => src.ArtistName))
                 .ForMember(dest => dest.BasicInfo, source => source.MapFrom(src => src.ArtistBasicInfo));

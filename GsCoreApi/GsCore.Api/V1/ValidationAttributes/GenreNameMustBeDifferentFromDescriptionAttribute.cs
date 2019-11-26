@@ -13,17 +13,43 @@ namespace GsCore.Api.V1.ValidationAttributes
             ValidationContext validationContext)
         {
 
-            var genre = (GenreCreateRequest)validationContext.ObjectInstance;
+            var genre = (GenreBaseDto)validationContext.ObjectInstance;
             
             if (genre.Name == genre.Description)
             {
                 return new ValidationResult(
                     "Genre description should be different from the name",
-                    new[] {nameof(GenreCreateRequest) }
+                    new[] {nameof(GenreBaseDto) }
                );
             }
 
             return ValidationResult.Success;
         }
     }
+
+
+    #region "Custom Attribute - Class-level input validation"
+
+    
+    //public class GenreNameMustBeDifferentFromDescriptionAttribute : ValidationAttribute
+    //{
+    //    protected override ValidationResult IsValid(object value, //object is the object to validate (i.e. GenreCreateRequest dto)
+    //        ValidationContext validationContext)
+    //    {
+
+    //        var genre = (GenreCreateRequest)validationContext.ObjectInstance;
+
+    //        if (genre.Name == genre.Description)
+    //        {
+    //            return new ValidationResult(
+    //                "Genre description should be different from the name",
+    //                new[] { nameof(GenreCreateRequest) }
+    //            );
+    //        }
+
+    //        return ValidationResult.Success;
+    //    }
+    //}
+
+    #endregion
 }
