@@ -62,7 +62,6 @@ namespace GsCore.Api
                         {
                             ContentTypes = {"application/problem+json"}
                         };
-
                     };
                 });
 

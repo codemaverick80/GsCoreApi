@@ -55,13 +55,13 @@ namespace GsCore.Database.Entities
 
                 entity.Property(e => e.Label).HasMaxLength(200);
 
-                entity.Property(e => e.LargeThumbnail).HasMaxLength(50);
+                entity.Property(e => e.LargeThumbnail).HasMaxLength(100);
 
-                entity.Property(e => e.MediumThumbnail).HasMaxLength(50);
+                entity.Property(e => e.MediumThumbnail).HasMaxLength(100);
 
-                entity.Property(e => e.SmallThumbnail).HasMaxLength(50);
+                entity.Property(e => e.SmallThumbnail).HasMaxLength(100);
 
-                entity.Property(e => e.ThumbnailTag).HasMaxLength(15);
+                entity.Property(e => e.ThumbnailTag).HasMaxLength(50);
 
                 entity.HasOne(d => d.Artist)
                     .WithMany(p => p.Album)
@@ -84,11 +84,11 @@ namespace GsCore.Database.Entities
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.Property(e => e.LargeThumbnail).HasMaxLength(50);
+                entity.Property(e => e.LargeThumbnail).HasMaxLength(100);
 
-                entity.Property(e => e.SmallThumbnail).HasMaxLength(50);
+                entity.Property(e => e.SmallThumbnail).HasMaxLength(100);
 
-                entity.Property(e => e.ThumbnailTag).HasMaxLength(20);
+                entity.Property(e => e.ThumbnailTag).HasMaxLength(50);
 
                 entity.Property(e => e.YearActive).HasMaxLength(50);
             });
@@ -218,7 +218,7 @@ namespace GsCore.Database.Entities
 
                 entity.Property(e => e.TrackName)
                     .IsRequired()
-                    .HasMaxLength(400);
+                    .HasMaxLength(100);
 
                 entity.HasOne(d => d.Album)
                     .WithMany(p => p.Track)
