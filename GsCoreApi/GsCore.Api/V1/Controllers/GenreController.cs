@@ -107,7 +107,8 @@ namespace GsCore.Api.V1.Controllers
         {
             var genreFromRepo = await _genreRepository.GetGenre(genreId);
 
-            if (genreFromRepo == null)
+           // if (genreFromRepo == null)
+            if (!_genreRepository.GenreExists(genreId))
             {
                // return NotFound();
                 var genreToAdd = _mapper.Map<Genre>(genreUpdateRequest);
@@ -207,13 +208,17 @@ namespace GsCore.Api.V1.Controllers
         {
             var genreFromRepo = await _genreRepository.GetGenre(genreId);
 
-            if (genreFromRepo == null)
+            //if (genreFromRepo == null)
+            if (!_genreRepository.GenreExists(genreId))
             {
-                //return NotFound();
                 //TODO : create genre via PATCH request (upserting), if genre is not found in database
-
                 var genreDto=new GenreUpdateRequest();
-                patchDocument.ApplyTo(genreDto);
+                patchDocument.ApplyTo(genreDto, ModelState);
+
+                if (!TryValidateModel(genreDto))
+                {
+                    return ValidationProblem(ModelState);
+                }
 
                 var genreToAdd= _mapper.Map<Genre>(genreDto);
                 genreToAdd.Id = genreId;
@@ -231,7 +236,6 @@ namespace GsCore.Api.V1.Controllers
                         genreId = genreGetResponse.Id
                     },
                     genreGetResponse);
-
             }
 
             var genreToPatch = _mapper.Map<GenreUpdateRequest>(genreFromRepo);
@@ -244,7 +248,6 @@ namespace GsCore.Api.V1.Controllers
                 return ValidationProblem(ModelState);
             }
 
-
             _mapper.Map(genreToPatch, genreFromRepo);
 
             _genreRepository.UpdateGenre(genreFromRepo);
@@ -253,6 +256,22 @@ namespace GsCore.Api.V1.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{genreId}")]
+        public ActionResult DeleteGenre(Guid genreId)
+        {
+            if (!_genreRepository.GenreExists(genreId))
+            {
+                return NotFound();
+            }
+            //TODO: Check if any album has this genre id
+
+
+
+            return NoContent();
+        }
+
+
 
         public override ActionResult ValidationProblem(
            [ActionResultObjectValue] ModelStateDictionary modelStateDictionary)

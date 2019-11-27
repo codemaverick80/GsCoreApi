@@ -72,12 +72,7 @@ namespace GsCore.Api
                     };
                 });
 
-
-
-
             #region "Add Api Versioning Service"
-
-
             services.AddVersionedApiExplorer(setupAction =>
             {
                 setupAction.GroupNameFormat = "'v'VV";

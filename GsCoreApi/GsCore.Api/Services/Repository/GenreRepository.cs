@@ -63,7 +63,10 @@ namespace GsCore.Api.Services.Repository
             //no code implemented
         }
 
-
+        public bool GenreExists(Guid genreId)
+        {
+            return _context.Set<Genre>().Any(a => a.Id == genreId);
+        }
 
 
         public void Dispose()
