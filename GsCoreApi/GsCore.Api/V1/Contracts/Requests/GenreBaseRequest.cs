@@ -8,7 +8,7 @@ using GsCore.Api.V1.ValidationAttributes;
 namespace GsCore.Api.V1.Contracts.Requests
 {
     [GenreNameMustBeDifferentFromDescription]
-    public abstract class GenreBaseDto
+    public abstract class GenreBaseRequest
     {
         [Required(ErrorMessage = "Genre name must not be empty.")]
         [MaxLength(50)]

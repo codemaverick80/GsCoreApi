@@ -1,15 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using GsCore.Api.V1.ValidationAttributes;
-
-namespace GsCore.Api.V1.Contracts.Requests
+﻿namespace GsCore.Api.V1.Contracts.Requests.Post
 {
-
-
-    public class GenreCreateRequest : GenreBaseDto 
+    public class GenrePostRequest : GenreBaseRequest 
     {
-
-       
 
     }
 
@@ -17,7 +9,7 @@ namespace GsCore.Api.V1.Contracts.Requests
     #region "Custom Attribute - Class-level input validation"
 
     //[GenreNameMustBeDifferentFromDescription]
-    //public class GenreCreateRequest 
+    //public class GenrePostRequest 
     //{
     //    [Required(ErrorMessage = "Genre name must not be empty.")]
     //    [MaxLength(50)]
@@ -33,7 +25,7 @@ namespace GsCore.Api.V1.Contracts.Requests
     #region "IValidatableObject - Class-level input validation"
 
 
-    //public class GenreCreateRequest : IValidatableObject
+    //public class GenrePostRequest : IValidatableObject
     //{
     //    [Required(ErrorMessage = "Genre name must not be empty.")]
     //    [MaxLength(50)]
@@ -49,7 +41,7 @@ namespace GsCore.Api.V1.Contracts.Requests
     //        {
     //            yield return new ValidationResult(
     //                "Genre description should be different from the name",
-    //                new[] { "GenreCreateRequest" }
+    //                new[] { "GenrePostRequest" }
     //            );
     //        }
     //    }

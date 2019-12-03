@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using GsCore.Api.V1.Contracts.Requests.Patch;
+using GsCore.Api.V1.Contracts.Requests.Post;
+using GsCore.Api.V1.Contracts.Requests.Put;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -68,7 +71,7 @@ namespace GsCore.Api.V1.Controllers
         }
      
         [HttpPost]
-        public async Task<ActionResult<GenreGetResponse>> CreateGenre(GenreCreateRequest genre)
+        public async Task<ActionResult<GenreGetResponse>> CreateGenre(GenrePostRequest genre)
         {
 
             var genreEntity = _mapper.Map<Genre>(genre);
@@ -101,17 +104,22 @@ namespace GsCore.Api.V1.Controllers
             return locationUrl;
         }
 
-        ////NOTE: PUT will update full entity, which is not good if we have lots of fields. PATCH is best for partial entity update
+        /// NOTE: PUT will update full entity, which is not good if we have lots of fields.
+        /// PATCH is best for partial entity update
         [HttpPut("{genreId}")]
-        public async Task<IActionResult> UpdateGenre(Guid genreId, GenreUpdateRequest genreUpdateRequest)
+        public async Task<IActionResult> UpdateGenre(Guid genreId, GenrePutRequest genrePutRequest)
         {
             var genreFromRepo = await _genreRepository.GetGenre(genreId);
 
-           // if (genreFromRepo == null)
+            // if (genreFromRepo == null)
+            // {
+            // return NotFound();
+            // }
+
             if (!_genreRepository.GenreExists(genreId))
-            {
-               // return NotFound();
-                var genreToAdd = _mapper.Map<Genre>(genreUpdateRequest);
+            { 
+                //TODO: Add genre if not exists
+                var genreToAdd = _mapper.Map<Genre>(genrePutRequest);
                 genreToAdd.Id = genreId;
                 _genreRepository.AddGenre(genreToAdd);
                 await _genreRepository.SaveAsync();
@@ -127,7 +135,9 @@ namespace GsCore.Api.V1.Controllers
                     },
                     genreGetResponse);
             }
-            _mapper.Map(genreUpdateRequest,genreFromRepo);
+
+
+            _mapper.Map(genrePutRequest,genreFromRepo);
 
             _genreRepository.UpdateGenre(genreFromRepo);
 
@@ -204,7 +214,7 @@ namespace GsCore.Api.V1.Controllers
 
         //Package Install: Microsoft.AspNetCore.Mvc.NewtonsoftJson
         [HttpPatch("{genreId}")]
-        public async Task<ActionResult> PartialGenreUpdate(Guid genreId,JsonPatchDocument<GenreUpdateRequest> patchDocument)
+        public async Task<ActionResult> PartialGenreUpdate(Guid genreId,JsonPatchDocument<GenrePatchRequest> patchDocument)
         {
             var genreFromRepo = await _genreRepository.GetGenre(genreId);
 
@@ -212,7 +222,7 @@ namespace GsCore.Api.V1.Controllers
             if (!_genreRepository.GenreExists(genreId))
             {
                 //TODO : create genre via PATCH request (upserting), if genre is not found in database
-                var genreDto=new GenreUpdateRequest();
+                var genreDto=new GenrePatchRequest();
                 patchDocument.ApplyTo(genreDto, ModelState);
 
                 if (!TryValidateModel(genreDto))
@@ -238,7 +248,7 @@ namespace GsCore.Api.V1.Controllers
                     genreGetResponse);
             }
 
-            var genreToPatch = _mapper.Map<GenreUpdateRequest>(genreFromRepo);
+            var genreToPatch = _mapper.Map<GenrePatchRequest>(genreFromRepo);
             
             ////TODO: add validation
             patchDocument.ApplyTo(genreToPatch);
@@ -265,8 +275,6 @@ namespace GsCore.Api.V1.Controllers
                 return NotFound();
             }
             //TODO: Check if any album has this genre id
-
-
 
             return NoContent();
         }

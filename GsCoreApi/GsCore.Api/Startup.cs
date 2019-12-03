@@ -48,8 +48,9 @@ namespace GsCore.Api
             {
                 setupAction.SerializerSettings.ContractResolver=new CamelCasePropertyNamesContractResolver();
             })
-            .AddXmlDataContractSerializerFormatters()
             //END - Added NewtonsoftJson for PATCH request
+            .AddXmlDataContractSerializerFormatters()
+            
             .ConfigureApiBehaviorOptions(setupAction =>
                 {
                     setupAction.InvalidModelStateResponseFactory = context =>

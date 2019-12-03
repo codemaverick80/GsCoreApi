@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GsCore.Api.Services.Repository.Interfaces;
 using GsCore.Api.V1.Contracts.Requests;
+using GsCore.Api.V1.Contracts.Requests.Post;
 using GsCore.Api.V1.Contracts.Responses;
 using GsCore.Database.Entities;
 using Microsoft.AspNetCore.Http;
@@ -43,9 +44,9 @@ namespace GsCore.Api.V1.Controllers
         }
 
        /// <summary>
-       /// Provide single artist's detail.
+       /// Provide single artistBase's detail.
        /// </summary>
-       /// <param name="artistId">artist id</param>
+       /// <param name="artistId">artistBase id</param>
        /// <returns>Artist details</returns>
       //  [HttpGet("{artistId}",Name="GetArtist")]
        [HttpGet(ApiRoutes.ArtistsRoute.Get,Name= "GetArtist")]
@@ -61,14 +62,14 @@ namespace GsCore.Api.V1.Controllers
         }
 
         /// <summary>
-        /// Allow api clients to add new artist.
+        /// Allow api clients to add new artistBase.
         /// </summary>
-        /// <param name="artist"></param>
+        /// <param name="artistBase"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<ArtistGetResponse>> CreateArtist([FromBody]ArtistCreateRequest artist)
+        public async Task<ActionResult<ArtistGetResponse>> CreateArtist([FromBody]ArtistPostRequest artistBase)
         {
-            var artistEntity = _mapper.Map<Artist>(artist);
+            var artistEntity = _mapper.Map<Artist>(artistBase);
            artistEntity.Id=Guid.NewGuid();
 
             _artistRepository.AddArtist(artistEntity);
@@ -89,7 +90,7 @@ namespace GsCore.Api.V1.Controllers
         [HttpPost(ApiRoutes.ArtistsRoute.CreateArtistBasicInfo)]
         public async Task<ActionResult<ArtistGetResponse>> CreateBasicInfo(Guid artistId,[FromBody]ArtistBasicInfoCreateRequest basicInfo)
         {
-            // Check if artist exists
+            // Check if artistBase exists
             if (!_artistRepository.ArtistExists(artistId))
             {
                 return NotFound();
@@ -121,7 +122,13 @@ namespace GsCore.Api.V1.Controllers
         #region "Update Resourse"
         //Update Artist basicInfo :api/v1/artists/2/basicinfo
 
+
+
+
+
         //Update Artist: api/v1/artists/2
+
+
 
 
 

@@ -13,13 +13,13 @@ namespace GsCore.Api.V1.ValidationAttributes
             ValidationContext validationContext)
         {
 
-            var genre = (GenreBaseDto)validationContext.ObjectInstance;
+            var genre = (GenreBaseRequest)validationContext.ObjectInstance;
             
             if (genre.Name == genre.Description)
             {
                 return new ValidationResult(
                     "Genre description should be different from the name",
-                    new[] {nameof(GenreBaseDto) }
+                    new[] {nameof(GenreBaseRequest) }
                );
             }
 

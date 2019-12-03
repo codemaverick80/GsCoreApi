@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace GsCore.Api.V1.Contracts.Requests
+namespace GsCore.Api.V1.Contracts.Requests.Put
 {
-    public class GenreUpdateRequest: GenreBaseDto
+    public class GenrePutRequest: GenreBaseRequest
     {
         [Required(ErrorMessage = "Genre description must be provided while updating.")]
         public override string Description
