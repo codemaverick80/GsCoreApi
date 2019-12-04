@@ -19,24 +19,68 @@
             Genre Description
             </summary>
         </member>
+        <member name="T:GsCore.Api.V1.Controllers.ArtistController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.#ctor(GsCore.Api.Services.Repository.Interfaces.IArtistRepository,AutoMapper.IMapper)">
+            <summary>
+            
+            </summary>
+            <param name="artistRepository"></param>
+            <param name="mapper"></param>
+        </member>
         <member name="M:GsCore.Api.V1.Controllers.ArtistController.GetArtists">
             <summary>
-            Provides artists.
+            
             </summary>
-            <returns>List of artists</returns>
+            <returns></returns>
         </member>
         <member name="M:GsCore.Api.V1.Controllers.ArtistController.GetArtists(System.Guid)">
             <summary>
-            Provide single artistBase's detail.
+            
             </summary>
-            <param name="artistId">artistBase id</param>
-            <returns>Artist details</returns>
+            <param name="artistId"></param>
+            <returns></returns>
         </member>
         <member name="M:GsCore.Api.V1.Controllers.ArtistController.CreateArtist(GsCore.Api.V1.Contracts.Requests.Post.ArtistPostRequest)">
             <summary>
-            Allow api clients to add new artistBase.
+            
             </summary>
             <param name="artistBase"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.CreateBasicInfo(System.Guid,GsCore.Api.V1.Contracts.Requests.Post.ArtistBasicInfoPostRequest)">
+            <summary>
+            
+            </summary>
+            <param name="artistId"></param>
+            <param name="basicInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.UpdateArtist(System.Guid,GsCore.Api.V1.Contracts.Requests.Put.ArtistPutRequest)">
+            <summary>
+            
+            </summary>
+            <param name="artistId"></param>
+            <param name="artistPutRequest"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.UpdateArtistInfo(System.Guid,GsCore.Api.V1.Contracts.Requests.Put.ArtistBasicInfoPutRequest)">
+            <summary>
+            
+            </summary>
+            <param name="artistId"></param>
+            <param name="putRequest"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.PartialArtistUpdate(System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{GsCore.Api.V1.Contracts.Requests.Patch.ArtistPatchRequest})">
+            <summary>
+            
+            </summary>
+            <param name="artistId"></param>
+            <param name="patchRequest"></param>
             <returns></returns>
         </member>
         <member name="M:GsCore.Api.V1.Controllers.GenreController.UpdateGenre(System.Guid,GsCore.Api.V1.Contracts.Requests.Put.GenrePutRequest)">

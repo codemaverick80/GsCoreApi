@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace GsCore.Api.V1.Contracts.Requests.Put
 {
-    public class ArtistInfoPutRequest:ArtistInfoBaseRequest
+    public class ArtistBasicInfoPutRequest:ArtistInfoBaseRequest
     {
         [Required(ErrorMessage = "Artist born info must be provided while updating.")]
         public override string Born { get=>base.Born; set=>base.Born=value; }
 
         [Required(ErrorMessage = "Artist deceased info must be provided while updating.")]
-        public override string Died { get=>base.Died; set=>base.Born=value; }
+        public override string Died { get=>base.Died; set=>base.Died=value; }
 
         [Required(ErrorMessage = "Artist AKA info must be provided while updating.")]
         public override string AlsoKnownAs { get=>base.AlsoKnownAs; set=>base.AlsoKnownAs=value; }

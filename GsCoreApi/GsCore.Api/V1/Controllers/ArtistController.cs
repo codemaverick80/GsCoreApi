@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GsCore.Api.Services.Repository.Interfaces;
-using GsCore.Api.V1.Contracts.Requests;
 using GsCore.Api.V1.Contracts.Requests.Patch;
 using GsCore.Api.V1.Contracts.Requests.Post;
 using GsCore.Api.V1.Contracts.Requests.Put;
 using GsCore.Api.V1.Contracts.Responses;
 using GsCore.Database.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -20,7 +17,10 @@ using Microsoft.Extensions.Options;
 
 namespace GsCore.Api.V1.Controllers
 {
-   // [Route("api/v{version:apiVersion}/artists")]
+    // [Route("api/v{version:apiVersion}/artists")]
+    /// <summary>
+    /// 
+    /// </summary>
     [Route(ApiRoutes.ArtistsRoute.BaseUrl)]
     [ApiController]
     public class ArtistController : ControllerBase
@@ -28,13 +28,26 @@ namespace GsCore.Api.V1.Controllers
         private readonly IArtistRepository _artistRepository;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="artistRepository"></param>
+        /// <param name="mapper"></param>
         public ArtistController(IArtistRepository artistRepository, IMapper mapper)
         {
             _artistRepository = artistRepository ?? throw new ArgumentNullException(nameof(artistRepository));
-            _mapper = mapper ?? throw  new ArgumentNullException(nameof(mapper));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        
+        #region "GET Request"
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        /*
+        * GET: /api/v{version}/artists
+       */
         [HttpGet]
         public async Task<ActionResult<ArtistGetResponse[]>> GetArtists()
         {
@@ -47,8 +60,16 @@ namespace GsCore.Api.V1.Controllers
             return Ok(_mapper.Map<ArtistGetResponse[]>(artistEntity));
         }
 
-      
-       [HttpGet(ApiRoutes.ArtistsRoute.Get,Name= "GetArtist")]
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="artistId"></param>
+        /// <returns></returns>
+        /*
+         * GET: /api/v{version}/artists/{artistId}
+        */
+        [HttpGet(ApiRoutes.ArtistsRoute.Get, Name = "GetArtist")]
         public async Task<ActionResult<ArtistGetResponse>> GetArtists(Guid artistId)
         {
 
@@ -60,12 +81,24 @@ namespace GsCore.Api.V1.Controllers
             return Ok(_mapper.Map<ArtistGetResponse>(artistEntity));
         }
 
-       
+        #endregion
+
+        #region "POST Request"
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="artistBase"></param>
+        /// <returns></returns>
         [HttpPost]
+
+        /*
+        * POST: /api/v{version}/artists
+        */
         public async Task<ActionResult<ArtistGetResponse>> CreateArtist([FromBody]ArtistPostRequest artistBase)
         {
-          var artistEntity = _mapper.Map<Artist>(artistBase);
-           artistEntity.Id=Guid.NewGuid();
+            var artistEntity = _mapper.Map<Artist>(artistBase);
+            artistEntity.Id = Guid.NewGuid();
 
             _artistRepository.AddArtist(artistEntity);
             await _artistRepository.SaveAsync();
@@ -80,43 +113,61 @@ namespace GsCore.Api.V1.Controllers
                 artistGetResponse);
         }
 
-     
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="artistId"></param>
+        /// <param name="basicInfo"></param>
+        /// <returns></returns>
+        /*
+        * POST: /api/v{version}/artists/{artistId}/basicInfo
+        */
         [HttpPost(ApiRoutes.ArtistsRoute.PostArtistBasicInfo)]
-        public async Task<ActionResult<ArtistGetResponse>> CreateBasicInfo(Guid artistId,[FromBody]ArtistBasicInfoPostRequest basicInfo)
+        public async Task<ActionResult<ArtistGetResponse>> CreateBasicInfo(Guid artistId, [FromBody]ArtistBasicInfoPostRequest basicInfo)
         {
-           
+
             if (!_artistRepository.ArtistExists(artistId))
             {
                 return NotFound();
             }
-            
-            if (!_artistRepository.ArtistBasicInfoExists(artistId))
+
+            if (_artistRepository.ArtistBasicInfoExists(artistId))
+                return Conflict(new { message = $"An existing record with the id {artistId} was already found." });
+            var artistBasicInfoEntity = _mapper.Map<ArtistBasicInfo>(basicInfo);
+            artistBasicInfoEntity.ArtistId = artistId;
+
+            _artistRepository.AddArtistBasicInfo(artistBasicInfoEntity);
+            await _artistRepository.SaveAsync();
+
+            return CreatedAtRoute("GetArtist", new
             {
+                version = HttpContext.GetRequestedApiVersion().ToString(),
+                artistId = artistId
+            }, null);
 
-                var artistBasicInfoEntity = _mapper.Map<ArtistBasicInfo>(basicInfo);
-                artistBasicInfoEntity.ArtistId = artistId;
-
-                _artistRepository.AddArtistBasicInfo(artistBasicInfoEntity);
-                await _artistRepository.SaveAsync();
-
-                return CreatedAtRoute("GetArtist",new
-                    {
-                        version = HttpContext.GetRequestedApiVersion().ToString(),
-                        artistId = artistId
-                    },null);
-
-            }
-
-            return Conflict(new {message = $"An existing record with the id {artistId} was already found."});
         }
 
 
-        #region "Update Resourse"
-        
+        #endregion
+
+        #region "PUT Request"
+
         //Update Artist: api/v1/artists/2
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="artistId"></param>
+        /// <param name="artistPutRequest"></param>
+        /// <returns></returns>
+        /*
+        * PUT: /api/v{version}/artists/{artistId}
+        */
         [HttpPut("{artistId}")]
-        public async Task<ActionResult> UpdateArtist(Guid artistId,[FromBody]ArtistPutRequest artistPutRequest)
+        public async Task<ActionResult> UpdateArtist(Guid artistId, [FromBody]ArtistPutRequest artistPutRequest)
         {
+
+            var artistFromRepo = await _artistRepository.GetArtistsAsync(artistId);
             if (!_artistRepository.ArtistExists(artistId))
             {
                 var artistToAdd = _mapper.Map<Artist>(artistPutRequest);
@@ -124,25 +175,37 @@ namespace GsCore.Api.V1.Controllers
                 _artistRepository.AddArtist(artistToAdd);
                 await _artistRepository.SaveAsync();
                 var artistGetResponse = _mapper.Map<ArtistGetResponse>(artistToAdd);
-                return CreatedAtRoute("GetArtist",new
-                    {
-                        version = HttpContext.GetRequestedApiVersion().ToString(),
-                        artistId = artistGetResponse.Id
-                    },
+                return CreatedAtRoute("GetArtist", new
+                {
+                    version = HttpContext.GetRequestedApiVersion().ToString(),
+                    artistId = artistGetResponse.Id
+                },
                     artistGetResponse);
             }
-            var artistFromRepo = await _artistRepository.GetArtistsAsync(artistId);
+
             _mapper.Map(artistPutRequest, artistFromRepo);
+
             _artistRepository.UpdateArtist(artistFromRepo);
+
             await _artistRepository.SaveAsync();
+
             return NoContent();
         }
 
 
         //Update Artist basicInfo :api/v1/artists/2/basicinfo
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="artistId"></param>
+        /// <param name="putRequest"></param>
+        /// <returns></returns>
+        /*
+        * PUT: /api/v{version}/artists/{artistId}/basicInfo
+        */
         [HttpPut(ApiRoutes.ArtistsRoute.PutArtistBasicInfo, Name = "UpdateArtistInfo")]
-        public async Task<ActionResult> UpdateArtistInfo(Guid artistId, [FromBody]ArtistInfoPutRequest putRequest)
+        public async Task<ActionResult> UpdateArtistInfo(Guid artistId, [FromBody]ArtistBasicInfoPutRequest putRequest)
         {
             if (_artistRepository.ArtistExists(artistId) && !_artistRepository.ArtistBasicInfoExists(artistId))
             {
@@ -150,7 +213,10 @@ namespace GsCore.Api.V1.Controllers
                 basicInfoToAdd.ArtistId = artistId;
                 _artistRepository.AddArtistBasicInfo(basicInfoToAdd);
                 await _artistRepository.SaveAsync();
-                var artistGetResponse = _mapper.Map<ArtistGetResponse>(basicInfoToAdd);
+
+                var artistFromRepo = await _artistRepository.GetArtistsAsync(artistId);
+                var artistGetResponse = _mapper.Map<ArtistGetResponse>(artistFromRepo);
+
                 return CreatedAtRoute("GetArtist", new
                 {
                     version = HttpContext.GetRequestedApiVersion().ToString(),
@@ -168,17 +234,26 @@ namespace GsCore.Api.V1.Controllers
 
         #endregion
 
+        #region "PATCH Request"
 
-        #region "Patch"
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="artistId"></param>
+        /// <param name="patchRequest"></param>
+        /// <returns></returns>
+        /*
+         * PATCH: /api/v{version}/artists/{artistId}
+        */
         [HttpPatch("{artistId}")]
-        public async Task<ActionResult> PartialArtistUpdate(Guid artistId,JsonPatchDocument<ArtistPatchRequest> patchRequest)
+        public async Task<ActionResult> PartialArtistUpdate(Guid artistId, JsonPatchDocument<ArtistPatchRequest> patchRequest)
         {
             if (!_artistRepository.ArtistExists(artistId))
             {
-                var artistPatch=new ArtistPatchRequest();
+                var artistPatch = new ArtistPatchRequest();
                 patchRequest.ApplyTo(artistPatch, ModelState);
 
+                //TODO: Validation 
                 if (!TryValidateModel(artistPatch))
                 {
                     return ValidationProblem(ModelState);
@@ -189,7 +264,7 @@ namespace GsCore.Api.V1.Controllers
 
                 _artistRepository.AddArtist(artistToAdd);
 
-                _artistRepository.SaveAsync();
+                await _artistRepository.SaveAsync();
 
                 var artistGetResponse = _mapper.Map<ArtistGetResponse>(artistToAdd);
                 return CreatedAtRoute(
@@ -206,7 +281,7 @@ namespace GsCore.Api.V1.Controllers
             var artistToPatch = _mapper.Map<ArtistPatchRequest>(artistFromRepo);
 
             patchRequest.ApplyTo(artistToPatch);
-
+            //TODO: Validation
             if (!TryValidateModel(artistToPatch))
             {
                 return ValidationProblem(ModelState);
@@ -218,6 +293,63 @@ namespace GsCore.Api.V1.Controllers
             return NoContent();
         }
 
+        /*
+         * PATCH: /api/v{version}/artists/{artistId}/basicInfo
+        */
+        [HttpPatch(ApiRoutes.ArtistsRoute.PatchArtistBasicInfo, Name= "UpdateArtistInfo")]
+        public async Task<ActionResult> PartialArtistBasicInfoUpdate(Guid artistId, JsonPatchDocument<ArtistBasicInfoPatchRequest> patchRequest)
+        {
+            if (_artistRepository.ArtistExists(artistId) && !_artistRepository.ArtistBasicInfoExists(artistId))
+            {
+                var artistInfoPatch = new ArtistBasicInfoPatchRequest();
+                patchRequest.ApplyTo(artistInfoPatch, ModelState);
+
+                //TODO: Validation 
+                if (!TryValidateModel(artistInfoPatch))
+                {
+                    return ValidationProblem(ModelState);
+                }
+
+                var artistToAdd = _mapper.Map<ArtistBasicInfo>(artistInfoPatch);
+                artistToAdd.ArtistId = artistId;
+
+                _artistRepository.AddArtistBasicInfo(artistToAdd);
+                await _artistRepository.SaveAsync();
+
+                var artistFromRepo = await _artistRepository.GetArtistsAsync(artistId);
+                var artistGetResponse = _mapper.Map<ArtistGetResponse>(artistFromRepo);
+                return CreatedAtRoute(
+                    "GetArtist",
+                    new
+                    {
+                        version = HttpContext.GetRequestedApiVersion().ToString(),
+                        artistId = artistGetResponse.Id
+                    },
+                    artistGetResponse);
+            }
+
+            var artistInfoFromRepo = await _artistRepository.GetArtistBasicInfo(artistId);
+            var artistInfoToPatch = _mapper.Map<ArtistBasicInfoPatchRequest>(artistInfoFromRepo);
+
+
+            patchRequest.ApplyTo(artistInfoToPatch);
+            //TODO: Validation
+            if (!TryValidateModel(artistInfoToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            _mapper.Map(artistInfoToPatch, artistInfoFromRepo);
+            _artistRepository.UpdateArtistBasicInfo(artistInfoFromRepo);
+            await _artistRepository.SaveAsync();
+            return NoContent();
+        }
+        #endregion
+
+        #region "DELETE Request"
+
+
+
         #endregion
 
         public override ActionResult ValidationProblem(
@@ -226,5 +358,7 @@ namespace GsCore.Api.V1.Controllers
             var options = HttpContext.RequestServices.GetRequiredService<IOptions<ApiBehaviorOptions>>();
             return (ActionResult)options.Value.InvalidModelStateResponseFactory(ControllerContext);
         }
+
+
     }
 }

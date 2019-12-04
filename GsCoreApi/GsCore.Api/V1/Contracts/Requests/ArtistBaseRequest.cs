@@ -10,7 +10,7 @@ namespace GsCore.Api.V1.Contracts.Requests
 {
     public abstract class ArtistBaseRequest
     {
-        public Guid Id { get; set; }
+       // public Guid Id { get; set; }
 
         [Required]
         [MaxLength(100)]
