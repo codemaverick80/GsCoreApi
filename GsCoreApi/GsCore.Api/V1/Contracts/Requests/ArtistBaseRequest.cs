@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using GsCore.Api.V1.Contracts.Requests.Post;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace GsCore.Api.V1.Contracts.Requests
@@ -29,6 +30,6 @@ namespace GsCore.Api.V1.Contracts.Requests
         [MaxLength(100)]
         public virtual string LargeThumbnail { get; set; }
 
-        public ArtistBasicInfoCreateRequest BasicInfo { get; set; }
+        public ArtistBasicInfoPostRequest BasicInfo { get; set; }
     }
 }

@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace GsCore.Api.V1.Contracts.Requests
 {
-    public class ArtistBasicInfoCreateRequest
+    public abstract class ArtistInfoBaseRequest
     {
-
         [MaxLength(100)]
-        public string Born { get; set; }
+        public virtual string Born { get; set; }
         [MaxLength(100)]
-        public string Died { get; set; }
+        public virtual string Died { get; set; }
         [MaxLength(500)]
-        public string AlsoKnownAs { get; set; }
+        public virtual string AlsoKnownAs { get; set; }
     }
 }

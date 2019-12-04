@@ -25,7 +25,6 @@ namespace GsCore.Api.V1.MappingProfiles
 
             CreateMap<GenrePutRequest,Genre>()
                 .ForMember(dest => dest.GenreName, source => source.MapFrom(src => src.Name));
-
             
             CreateMap<GenrePatchRequest, Genre>()
                 .ForMember(dest => dest.GenreName, source => source.MapFrom(src => src.Name));
@@ -45,8 +44,8 @@ namespace GsCore.Api.V1.MappingProfiles
             CreateMap<ArtistBasicInfo, ArtistBasicInfoGetResponse>();
             CreateMap<ArtistBasicInfoGetResponse,ArtistBasicInfo>();
 
-            CreateMap<ArtistBasicInfo, ArtistBasicInfoCreateRequest>();
-            CreateMap<ArtistBasicInfoCreateRequest,ArtistBasicInfo>();
+            CreateMap<ArtistBasicInfo, ArtistBasicInfoPostRequest>();
+            CreateMap<ArtistBasicInfoPostRequest, ArtistBasicInfo>();
 
             CreateMap<Artist, ArtistPostRequest>()
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => src.ArtistName))
@@ -55,6 +54,25 @@ namespace GsCore.Api.V1.MappingProfiles
             CreateMap<ArtistPostRequest,Artist>()
                 .ForMember(dest => dest.ArtistName, source => source.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ArtistBasicInfo, source => source.MapFrom(src => src.BasicInfo));
+
+            CreateMap<Artist, ArtistPutRequest>()
+                .ForMember(dest => dest.Name, source => source.MapFrom(src => src.ArtistName))
+                .ForMember(dest => dest.BasicInfo, source => source.MapFrom(src => src.ArtistBasicInfo));
+
+            CreateMap<ArtistPutRequest, Artist>()
+                .ForMember(dest => dest.ArtistName, source => source.MapFrom(src => src.Name))
+                .ForMember(dest => dest.ArtistBasicInfo, source => source.MapFrom(src => src.BasicInfo));
+
+            CreateMap<Artist, ArtistPatchRequest>()
+                .ForMember(dest => dest.Name, source => source.MapFrom(src => src.ArtistName))
+                .ForMember(dest => dest.BasicInfo, source => source.MapFrom(src => src.ArtistBasicInfo));
+
+            CreateMap<ArtistPatchRequest, Artist>()
+                .ForMember(dest => dest.ArtistName, source => source.MapFrom(src => src.Name))
+                .ForMember(dest => dest.ArtistBasicInfo, source => source.MapFrom(src => src.BasicInfo));
+
+
+
 
             CreateMap<Album, AlbumGetResponse>()
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => src.AlbumName));

@@ -95,5 +95,19 @@ namespace GsCore.Api.Services.Repository
         {
             //no code implemented
         }
+
+        public async Task<ArtistBasicInfo> GetArtistBasicInfo(Guid artistId)
+        {
+            IQueryable<ArtistBasicInfo> query = _context.Set<ArtistBasicInfo>();
+
+            var result = query.Where(a => a.ArtistId == artistId);
+
+            return await result.FirstOrDefaultAsync();
+        }
+
+        public void UpdateArtistBasicInfo(ArtistBasicInfo artistBasicInfo)
+        {
+            //no code implemented
+        }
     }
 }

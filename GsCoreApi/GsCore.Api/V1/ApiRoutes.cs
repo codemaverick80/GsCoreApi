@@ -19,7 +19,9 @@ namespace GsCore.Api.V1
         {
             public const string BaseUrl = Base + "/artists";
             public const string Get = "{artistId}";
-            public const string CreateArtistBasicInfo = "{artistId}/basicInfo";
+            public const string PostArtistBasicInfo = "{artistId}/basicInfo";
+            public const string PutArtistBasicInfo = "{artistId}/basicInfo";
+            public const string PatchArtistBasicInfo = "{artistId}/basicInfo";
         }
 
         public static class AlbumsRoute
