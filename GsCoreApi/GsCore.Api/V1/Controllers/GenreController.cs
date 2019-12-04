@@ -214,7 +214,7 @@ namespace GsCore.Api.V1.Controllers
 
         //Package Install: Microsoft.AspNetCore.Mvc.NewtonsoftJson
         [HttpPatch("{genreId}")]
-        public async Task<ActionResult> PartialGenreUpdate(Guid genreId,JsonPatchDocument<GenrePatchRequest> patchDocument)
+        public async Task<ActionResult> PartialGenreUpdate(Guid genreId,JsonPatchDocument<GenrePatchRequest> patchRequest)
         {
             var genreFromRepo = await _genreRepository.GetGenre(genreId);
 
@@ -222,15 +222,15 @@ namespace GsCore.Api.V1.Controllers
             if (!_genreRepository.GenreExists(genreId))
             {
                 //TODO : create genre via PATCH request (upserting), if genre is not found in database
-                var genreDto=new GenrePatchRequest();
-                patchDocument.ApplyTo(genreDto, ModelState);
+                var genreFromPatchRequest=new GenrePatchRequest();
+                patchRequest.ApplyTo(genreFromPatchRequest, ModelState);
 
-                if (!TryValidateModel(genreDto))
+                if (!TryValidateModel(genreFromPatchRequest))
                 {
                     return ValidationProblem(ModelState);
                 }
 
-                var genreToAdd= _mapper.Map<Genre>(genreDto);
+                var genreToAdd= _mapper.Map<Genre>(genreFromPatchRequest);
                 genreToAdd.Id = genreId;
 
                 _genreRepository.AddGenre(genreToAdd);
@@ -251,7 +251,7 @@ namespace GsCore.Api.V1.Controllers
             var genreToPatch = _mapper.Map<GenrePatchRequest>(genreFromRepo);
             
             ////TODO: add validation
-            patchDocument.ApplyTo(genreToPatch);
+            patchRequest.ApplyTo(genreToPatch);
 
             if (!TryValidateModel(genreToPatch))
             {

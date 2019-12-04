@@ -15,5 +15,6 @@ namespace GsCore.Api.Services.Repository.Interfaces
         Task<bool> SaveAsync();
         bool ArtistExists(Guid artistId);
         bool ArtistBasicInfoExists(Guid artistId);
+        void UpdateArtist(Artist genre);
     }
 }

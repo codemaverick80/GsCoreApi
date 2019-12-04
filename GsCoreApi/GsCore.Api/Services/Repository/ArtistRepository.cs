@@ -90,5 +90,10 @@ namespace GsCore.Api.Services.Repository
         {
             return _context.Set<ArtistBasicInfo>().Any(a => a.ArtistId == artistId);
         }
+
+        public void UpdateArtist(Artist genre)
+        {
+            //no code implemented
+        }
     }
 }

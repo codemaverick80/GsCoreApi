@@ -5,11 +5,18 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GsCore.Api.Services.Repository.Interfaces;
 using GsCore.Api.V1.Contracts.Requests;
+using GsCore.Api.V1.Contracts.Requests.Patch;
 using GsCore.Api.V1.Contracts.Requests.Post;
+using GsCore.Api.V1.Contracts.Requests.Put;
 using GsCore.Api.V1.Contracts.Responses;
 using GsCore.Database.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace GsCore.Api.V1.Controllers
 {
@@ -69,7 +76,7 @@ namespace GsCore.Api.V1.Controllers
         [HttpPost]
         public async Task<ActionResult<ArtistGetResponse>> CreateArtist([FromBody]ArtistPostRequest artistBase)
         {
-            var artistEntity = _mapper.Map<Artist>(artistBase);
+          var artistEntity = _mapper.Map<Artist>(artistBase);
            artistEntity.Id=Guid.NewGuid();
 
             _artistRepository.AddArtist(artistEntity);
@@ -127,7 +134,31 @@ namespace GsCore.Api.V1.Controllers
 
 
         //Update Artist: api/v1/artists/2
-
+        [HttpPut("{artistId}")]
+        public async Task<ActionResult> UpdateArtist(Guid artistId,[FromBody]ArtistPutRequest artistPutRequest)
+        {
+            if (!_artistRepository.ArtistExists(artistId))
+            {
+                var artistToAdd = _mapper.Map<Artist>(artistPutRequest);
+                artistToAdd.Id = artistId;
+                _artistRepository.AddArtist(artistToAdd);
+                await _artistRepository.SaveAsync();
+                var artistGetResponse = _mapper.Map<ArtistGetResponse>(artistToAdd);
+                return CreatedAtRoute(
+                    "GetArtist",
+                    new
+                    {
+                        version = HttpContext.GetRequestedApiVersion().ToString(),
+                        artistId = artistGetResponse.Id
+                    },
+                    artistGetResponse);
+            }
+            var artistFromRepo = await _artistRepository.GetArtistsAsync(artistId);
+            _mapper.Map(artistPutRequest, artistFromRepo);
+            _artistRepository.UpdateArtist(artistFromRepo);
+            await _artistRepository.SaveAsync();
+            return NoContent();
+        }
 
 
 
@@ -135,7 +166,62 @@ namespace GsCore.Api.V1.Controllers
         #endregion
 
 
+        #region "Patch"
 
+        [HttpPatch("{artistId}")]
+        public async Task<ActionResult> PartialArtistUpdate(Guid artistId,JsonPatchDocument<ArtistPatchRequest> patchRequest)
+        {
+            if (!_artistRepository.ArtistExists(artistId))
+            {
+                var artistPatch=new ArtistPatchRequest();
+                patchRequest.ApplyTo(artistPatch, ModelState);
 
+                if (!TryValidateModel(artistPatch))
+                {
+                    return ValidationProblem(ModelState);
+                }
+
+                var artistToAdd = _mapper.Map<Artist>(artistPatch);
+                artistToAdd.Id = artistId;
+
+                _artistRepository.AddArtist(artistToAdd);
+
+                _artistRepository.SaveAsync();
+
+                var artistGetResponse = _mapper.Map<ArtistGetResponse>(artistToAdd);
+                return CreatedAtRoute(
+                    "GetArtist",
+                    new
+                    {
+                        version = HttpContext.GetRequestedApiVersion().ToString(),
+                        artistId = artistGetResponse.Id
+                    },
+                    artistGetResponse);
+            }
+
+            var artistFromRepo = await _artistRepository.GetArtistsAsync(artistId);
+            var artistToPatch = _mapper.Map<ArtistPatchRequest>(artistFromRepo);
+
+            patchRequest.ApplyTo(artistToPatch);
+
+            if (!TryValidateModel(artistToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            _mapper.Map(artistToPatch, artistFromRepo);
+            _artistRepository.UpdateArtist(artistFromRepo);
+            await _artistRepository.SaveAsync();
+            return NoContent();
+        }
+
+        #endregion
+
+        public override ActionResult ValidationProblem(
+            [ActionResultObjectValue]ModelStateDictionary modelStateDictionary)
+        {
+            var options = HttpContext.RequestServices.GetRequiredService<IOptions<ApiBehaviorOptions>>();
+            return (ActionResult)options.Value.InvalidModelStateResponseFactory(ControllerContext);
+        }
     }
 }
