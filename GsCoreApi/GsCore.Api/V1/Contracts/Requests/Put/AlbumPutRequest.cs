@@ -30,7 +30,7 @@ namespace GsCore.Api.V1.Contracts.Requests.Put
         public override string LargeThumbnail { get=>base.LargeThumbnail; set=>base.LargeThumbnail=value; }
 
         
-       // public virtual string AlbumUrl { get; set; }
+       //public virtual string AlbumUrl { get; set; }
 
     }
 }

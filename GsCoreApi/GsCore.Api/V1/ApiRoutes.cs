@@ -29,8 +29,14 @@ namespace GsCore.Api.V1
             public const string BaseUrl = Base + "/albums";
             public const string Get ="{albumId}";
             public const string GetTrackByAlbum = "{albumId}/tracks";
+            
+            public const string PostTrack = "{albumId}/tracks";
 
-            public const string CreateTrack = "{albumId}/tracks";
+            public const string PutAlbum = "{albumId}";
+            public const string PutTrack = "{albumId}/tracks/{trackId}";
+
+            public const string PatchAlbum = "{albumId}";
+            public const string PatchTrack = "{albumId}/tracks/{trackId}";
         }
     }
 }

@@ -51,10 +51,24 @@ namespace GsCore.Api.Services.Repository
             return await result.ToListAsync();
         }
 
+        public async Task<Track> GetTrack(Guid trackId)
+        {
+            IQueryable<Track> query = _context.Set<Track>();
+
+            var result = query.Where(t => t.Id == trackId);
+
+            return await result.FirstOrDefaultAsync();
+        }
+
 
         public bool AlbumExists(Guid albumId)
         {
             return _context.Set<Album>().Any(a => a.Id == albumId);
+        }
+
+        public bool TrackExists(Guid trackId,Guid albumId)
+        {
+            return _context.Set<Track>().Any(a => a.Id == trackId && a.AlbumId==albumId);
         }
 
 
@@ -65,6 +79,11 @@ namespace GsCore.Api.Services.Repository
 
 
         public void UpdateAlbum(Album album)
+        {
+            //no code implemented
+        }
+
+        public void UpdateTrack(Track track)
         {
             //no code implemented
         }

@@ -110,12 +110,7 @@ namespace GsCore.Api.V1.Controllers
         public async Task<IActionResult> UpdateGenre(Guid genreId, GenrePutRequest genrePutRequest)
         {
             var genreFromRepo = await _genreRepository.GetGenre(genreId);
-
-            // if (genreFromRepo == null)
-            // {
-            // return NotFound();
-            // }
-
+            
             if (!_genreRepository.GenreExists(genreId))
             { 
                 //TODO: Add genre if not exists

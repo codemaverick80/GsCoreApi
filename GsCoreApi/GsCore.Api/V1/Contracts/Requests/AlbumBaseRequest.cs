@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using GsCore.Api.V1.Contracts.Requests.Post;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 
 namespace GsCore.Api.V1.Contracts.Requests
@@ -41,7 +42,7 @@ namespace GsCore.Api.V1.Contracts.Requests
         [MaxLength(500)]
         public virtual string AlbumUrl { get; set; }
 
-        public ICollection<TrackBaseRequest> Tracks { get; set; } = new List<TrackBaseRequest>();
+        public virtual ICollection<TrackPostRequest> Tracks { get; set; }=new List<TrackPostRequest>();
 
     }
 }
