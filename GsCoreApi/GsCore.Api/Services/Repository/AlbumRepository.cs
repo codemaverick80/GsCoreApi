@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GsCore.Api.Services.Repository
 {
-    public class AlbumRepository:IAlbumRepository
+    public class AlbumRepository : IAlbumRepository
     {
         private readonly GsDbContext _context;
 
@@ -17,17 +17,15 @@ namespace GsCore.Api.Services.Repository
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<Album> GetAlbumByIdAsync(Guid albumId)
+        public async Task<Album> GetAlbumAsync(Guid albumId)
         {
             IQueryable<Album> query = _context.Set<Album>();
 
             //// Build Query
             var result = query.Where(a => a.Id == albumId);
 
-
             //// execute query and return the result
             return await result.FirstOrDefaultAsync();
-
         }
 
         public async Task<IEnumerable<Album>> GetAlbumsAsync(int pageIndex = 1, int pageSize = 10)
@@ -56,9 +54,9 @@ namespace GsCore.Api.Services.Repository
 
         public bool AlbumExists(Guid albumId)
         {
-            return _context.Set<Album>().Any(a => a.Id ==albumId);
+            return _context.Set<Album>().Any(a => a.Id == albumId);
         }
-        
+
 
         public async Task<bool> SaveAsync()
         {
@@ -66,17 +64,10 @@ namespace GsCore.Api.Services.Repository
         }
 
 
-        //public void AddAlbum(int artistId,int genreId, Album album)
-        //{
-        //    if (album == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(album));
-        //    }
-
-        //    album.ArtistId = artistId;
-        //    album.GenreId = genreId;
-        //    _context.Add(album);
-        //}
+        public void UpdateAlbum(Album album)
+        {
+            //no code implemented
+        }
 
         public void AddAlbum(Album album)
         {
@@ -97,7 +88,7 @@ namespace GsCore.Api.Services.Repository
             _context.Add(track);
 
         }
-        
+
         #region "Disposing"
 
         public void Dispose()
@@ -106,8 +97,6 @@ namespace GsCore.Api.Services.Repository
             GC.SuppressFinalize(this);
         }
 
-       
-
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -115,8 +104,6 @@ namespace GsCore.Api.Services.Repository
                 _context?.Dispose();
             }
         }
-
-       
 
         #endregion
 

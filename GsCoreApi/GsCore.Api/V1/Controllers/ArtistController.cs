@@ -88,16 +88,17 @@ namespace GsCore.Api.V1.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="artistBase"></param>
+        /// <param name="artistPostRequest"></param>
         /// <returns></returns>
-        [HttpPost]
+       
 
         /*
         * POST: /api/v{version}/artists
         */
-        public async Task<ActionResult<ArtistGetResponse>> CreateArtist([FromBody]ArtistPostRequest artistBase)
+        [HttpPost]
+        public async Task<ActionResult<ArtistGetResponse>> CreateArtist([FromBody]ArtistPostRequest artistPostRequest)
         {
-            var artistEntity = _mapper.Map<Artist>(artistBase);
+            var artistEntity = _mapper.Map<Artist>(artistPostRequest);
             artistEntity.Id = Guid.NewGuid();
 
             _artistRepository.AddArtist(artistEntity);

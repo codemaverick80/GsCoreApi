@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace GsCore.Api.V1.Contracts.Requests
 {
-    public class TrackCreateRequest
+    public abstract class TrackBaseRequest
     {
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }

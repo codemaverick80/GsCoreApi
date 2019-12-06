@@ -4,16 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GsCore.Api.Services.Repository.Interfaces;
-using GsCore.Api.V1.Contracts.Requests;
+using GsCore.Api.V1.Contracts.Requests.Post;
+using GsCore.Api.V1.Contracts.Requests.Put;
 using GsCore.Api.V1.Contracts.Responses;
 using GsCore.Database.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 /*
 * api/v1/albums										    -> Get All albums	
-* api/v1/albums/{albumId}								-> Get a single album
-* api/v1/albums/{albumId}/tracks						-> Get all the tracks associated with a album
+* api/v1/albums/{albumId}								-> Get a single albumPostRequest
+* api/v1/albums/{albumId}/tracks						-> Get all the tracks associated with a albumPostRequest
 */
 namespace GsCore.Api.V1.Controllers
 {
@@ -33,7 +33,7 @@ namespace GsCore.Api.V1.Controllers
             _albumRepository = albumRepository ?? throw new ArgumentNullException(nameof(albumRepository));
         }
 
-        #region "Get Resources"
+        #region "GET Request"
 
         [HttpGet]
         public async Task<ActionResult<AlbumGetResponse[]>> GetAlbums()
@@ -50,7 +50,7 @@ namespace GsCore.Api.V1.Controllers
         [HttpGet(ApiRoutes.AlbumsRoute.Get,Name= "GetAlbum")]
         public async Task<ActionResult<AlbumGetResponse>> GetAlbums(Guid albumId)
         {
-            var albumsEntity =await _albumRepository.GetAlbumByIdAsync(albumId);
+            var albumsEntity =await _albumRepository.GetAlbumAsync(albumId);
             if (albumsEntity == null)
             {
                 return NotFound();
@@ -81,26 +81,25 @@ namespace GsCore.Api.V1.Controllers
 
         #endregion
 
-
-        #region "Create Resourse"
+        #region "POST Request"
 
         [HttpPost]
-        public async Task<ActionResult<AlbumGetResponse>> CreateAlbum([FromBody]AlbumCreateRequest album)
+        public async Task<ActionResult<AlbumGetResponse>> CreateAlbum([FromBody]AlbumPostRequest albumPostRequest)
         {
-            if (album.ArtistId == Guid.Empty || album.GenreId == Guid.Empty)
+            if (albumPostRequest.ArtistId == Guid.Empty || albumPostRequest.GenreId == Guid.Empty)
             {
-                throw new ArgumentNullException(nameof(album));
+                throw new ArgumentNullException(nameof(albumPostRequest));
             }
 
-            var albumEntity = _mapper.Map<Album>(album);
+            var albumEntity = _mapper.Map<Album>(albumPostRequest);
             albumEntity.Id=Guid.NewGuid();
 
             _albumRepository.AddAlbum(albumEntity);
            await _albumRepository.SaveAsync();
 
-            if (album.Tracks.Any())
+            if (albumPostRequest.Tracks.Any())
             {
-                foreach (var track in album.Tracks)
+                foreach (var track in albumPostRequest.Tracks)
                 {
                     var trackEntity = _mapper.Map<Track>(track);
                     trackEntity.Id = Guid.NewGuid();
@@ -123,7 +122,7 @@ namespace GsCore.Api.V1.Controllers
         
        // [HttpPost("{albumId}/tracks")]
         [HttpPost(ApiRoutes.AlbumsRoute.CreateTrack)]
-        public async Task<ActionResult<AlbumGetResponse>> CreateTrack(Guid albumId, [FromBody]ICollection<TrackCreateRequest> tracks)
+        public async Task<ActionResult<AlbumGetResponse>> CreateTrack(Guid albumId, [FromBody]ICollection<TrackPostRequest> tracks)
         {
             if (!tracks.Any())
             {
@@ -157,8 +156,31 @@ namespace GsCore.Api.V1.Controllers
 
         #endregion
 
+        #region "PUT Request"
 
-        #region "Update Resourse"
+        [HttpPut("{albumId}")]
+        public async Task<ActionResult> UpdateAlbum(Guid albumId,[FromBody] AlbumPutRequest albumPutRequest)
+        {
+            //Get album from repo
+            _albumRepository.GetAlbumAsync(albumId);
+
+            
+            if (!_albumRepository.AlbumExists(albumId))
+            {
+                return NotFound();
+                //TODO: Create new album
+            }
+
+
+
+            
+
+
+            return NoContent();
+        }
+        
+        
+        
         //Update Track :api/v1/albums/2/tracks/3
 
         //Update Album: api/v1/albums/2
@@ -167,8 +189,13 @@ namespace GsCore.Api.V1.Controllers
 
         #endregion
 
+        #region "PATCH Request"
 
-        #region "Delete Resourse"
+        
+
+        #endregion
+        
+        #region "DELETE Request"
 
 
         //Delete Track :api/v1/albums/2/tracks/3

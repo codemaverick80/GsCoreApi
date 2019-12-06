@@ -48,7 +48,7 @@
             <summary>
             
             </summary>
-            <param name="artistBase"></param>
+            <param name="artistPostRequest"></param>
             <returns></returns>
         </member>
         <member name="M:GsCore.Api.V1.Controllers.ArtistController.CreateBasicInfo(System.Guid,GsCore.Api.V1.Contracts.Requests.Post.ArtistBasicInfoPostRequest)">
