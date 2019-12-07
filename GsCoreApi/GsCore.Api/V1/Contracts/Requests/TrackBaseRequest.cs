@@ -14,5 +14,6 @@ namespace GsCore.Api.V1.Contracts.Requests
         public string Featuring { get; set; }
         [MaxLength(20)]
         public virtual string Duration { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

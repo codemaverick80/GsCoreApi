@@ -42,6 +42,8 @@ namespace GsCore.Api.V1.Contracts.Requests
         [MaxLength(500)]
         public virtual string AlbumUrl { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public virtual ICollection<TrackPostRequest> Tracks { get; set; }=new List<TrackPostRequest>();
 
     }

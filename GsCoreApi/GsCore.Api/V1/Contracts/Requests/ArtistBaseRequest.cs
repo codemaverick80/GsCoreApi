@@ -30,6 +30,8 @@ namespace GsCore.Api.V1.Contracts.Requests
         [MaxLength(100)]
         public virtual string LargeThumbnail { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public ArtistBasicInfoPostRequest BasicInfo { get; set; }
     }
 }

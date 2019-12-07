@@ -13,7 +13,7 @@ namespace GsCore.Api.V1.Contracts.Requests
         [Required(ErrorMessage = "Genre name must not be empty.")]
         [MaxLength(50)]
         public string Name { get; set; }
-
+        public bool IsDeleted { get; set; }
         public virtual string Description { get; set; }
     }
 }

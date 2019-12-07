@@ -48,7 +48,7 @@ namespace GsCore.Api.Services.Repository
         {
             IQueryable<Album> query = _context.Set<Album>();
 
-            var result = query.Where(a => a.ArtistId == artistId);
+            var result = query.Where(a => a.ArtistId == artistId && a.IsDeleted==false);
 
             return await result.ToListAsync();
         }
@@ -59,7 +59,7 @@ namespace GsCore.Api.Services.Repository
 
             var result = query
                 .Include(a=>a.ArtistBasicInfo)
-                .Where(a => a.Id == artistId);
+                .Where(a => a.Id == artistId && a.IsDeleted==false);
 
             return await result.FirstOrDefaultAsync();
         }
@@ -71,7 +71,7 @@ namespace GsCore.Api.Services.Repository
             var result=query
                 .Include(a => a.ArtistBasicInfo)
                 .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize);
+                .Take(pageSize).Where(a=>a.IsDeleted==false);
 
             return await result.ToListAsync();
         }
@@ -83,7 +83,7 @@ namespace GsCore.Api.Services.Repository
 
         public bool ArtistExists(Guid artistId)
         {
-            return _context.Set<Artist>().Any(a => a.Id == artistId);
+            return _context.Set<Artist>().Any(a => a.Id == artistId && a.IsDeleted==false);
         }
 
         public bool ArtistBasicInfoExists(Guid artistId)

@@ -22,7 +22,7 @@ namespace GsCore.Database.Entities
         public string MediumThumbnail { get; set; }
         public string LargeThumbnail { get; set; }
         public string AlbumUrl { get; set; }
-
+        public bool IsDeleted { get; set; }
         public virtual Artist Artist { get; set; }
         public virtual Genre Genre { get; set; }
         public virtual Inventory Inventory { get; set; }
