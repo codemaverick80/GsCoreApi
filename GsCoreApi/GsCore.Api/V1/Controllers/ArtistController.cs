@@ -81,6 +81,21 @@ namespace GsCore.Api.V1.Controllers
             return Ok(_mapper.Map<ArtistGetResponse>(artistEntity));
         }
 
+        [HttpGet(ApiRoutes.ArtistsRoute.GetAlbumsByArtist, Name = "GetAlbumByArtist")]
+        public async Task<ActionResult<AlbumGetResponse[]>> GetAlbumByArtist(Guid artistId)
+        {
+
+            var ablumEntity = await _artistRepository.GetAlbumsByArtistAsync(artistId);
+            if (ablumEntity == null)
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<AlbumGetResponse[]>(ablumEntity));
+        }
+
+
+
+
         #endregion
 
         #region "POST Request"
@@ -90,7 +105,7 @@ namespace GsCore.Api.V1.Controllers
         /// </summary>
         /// <param name="artistPostRequest"></param>
         /// <returns></returns>
-       
+
 
         /*
         * POST: /api/v{version}/artists

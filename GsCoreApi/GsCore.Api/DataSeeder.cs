@@ -29,8 +29,8 @@ namespace GsCore.Api
                     new Genre() {Id = new Guid("6886121B-EF80-4E94-944D-B8A712DC822E"), GenreName = "Reggae", Description = "Reggae is a music unique to Jamiaca, but it ironically has its roots in New Orleans R&B. Reggae''s direct forefather is ska, an uptempo, rhythmic variation based on the New Orleans R&B Jamaican musicians heard broadcast from the US on their transistor radios. Relying on skittering guitar and syncopated rhythms, ska was their interpretation of R&B and it was quite popular in the early ''60s. However, during one very hot summer, it was too hot to either play or dance to ska, so the beat was slowed down and reggae was born. Since then, reggae has proven to be as versatile as the blues, as it lends itself to a number of interpretations, from the melodic rock steady of Alton Ellis and the rock and folk-influenced songwriting of Bob Marley to the trippy, near-psychedelic soundscapes of dub artists like Lee ''Scratch'' Perry. It has crossed into the mainstream through the bright, bouncy ''reggae sunsplash'' festivals and pop-oriented bands like UB40, but more adventurous reggae artists, such as Marley and Perry, have influenced countless reggae, folk, rock and dance artists. Their contributions resonate throughout popular music."}
                 };
 
-                context.Genre.AddRangeAsync(genres);
-                context.SaveChangesAsync();
+                context.Genre.AddRange(genres);
+                context.SaveChanges();
             }
         }
     }
