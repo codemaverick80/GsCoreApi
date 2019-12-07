@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
-
 namespace GsCore.Api
 {
     public class Startup
