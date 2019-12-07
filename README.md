@@ -10,7 +10,7 @@ Geet Sangeet Web Api.
 
 - Swagger
 
-## Api Endpoints
+## Api GET Endpoints
 - Genres 
 
   - api/v1/genres
@@ -29,4 +29,19 @@ Geet Sangeet Web Api.
 - Artists
   - api/v1/artists
   - api/v1/artists/{artistId}
+
+## Api POST Endpoints
+- Genres 
+
+  - api/v1/genres
+
+- Albums
+
+  - api/v1/albums
+
+- Tracks 
+  - api/v1/albums/{albumId}/tracks
+
+- Artists
+  - api/v1/artists
 
