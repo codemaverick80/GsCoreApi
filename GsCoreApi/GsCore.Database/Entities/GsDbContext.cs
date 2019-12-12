@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -7,7 +9,7 @@ namespace GsCore.Database.Entities
 {
     public class GsDbContext : DbContext
     {
-       
+
         public GsDbContext(DbContextOptions<GsDbContext> options)
             : base(options)
         {
@@ -77,21 +79,21 @@ namespace GsCore.Database.Entities
             });
 
             modelBuilder.Entity<Artist>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+             {
+                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.ArtistName)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                 entity.Property(e => e.ArtistName)
+                     .IsRequired()
+                     .HasMaxLength(100);
 
-                entity.Property(e => e.LargeThumbnail).HasMaxLength(100);
+                 entity.Property(e => e.LargeThumbnail).HasMaxLength(100);
 
-                entity.Property(e => e.SmallThumbnail).HasMaxLength(100);
+                 entity.Property(e => e.SmallThumbnail).HasMaxLength(100);
 
-                entity.Property(e => e.ThumbnailTag).HasMaxLength(50);
+                 entity.Property(e => e.ThumbnailTag).HasMaxLength(50);
 
-                entity.Property(e => e.YearActive).HasMaxLength(50);
-            });
+                 entity.Property(e => e.YearActive).HasMaxLength(50);
+             });
 
             modelBuilder.Entity<ArtistBasicInfo>(entity =>
             {
@@ -108,7 +110,7 @@ namespace GsCore.Database.Entities
                 entity.HasOne(d => d.Artist)
                     .WithOne(p => p.ArtistBasicInfo)
                     .HasForeignKey<ArtistBasicInfo>(d => d.ArtistId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_ArtistBasicInfo_ToArtist");
             });
 
@@ -137,6 +139,7 @@ namespace GsCore.Database.Entities
                 entity.Property(e => e.GenreName)
                     .IsRequired()
                     .HasMaxLength(50);
+
             });
 
             modelBuilder.Entity<Inventory>(entity =>
@@ -223,11 +226,58 @@ namespace GsCore.Database.Entities
                 entity.HasOne(d => d.Album)
                     .WithMany(p => p.Track)
                     .HasForeignKey(d => d.AlbumId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Track_ToAlbum");
             });
+
+            SetGlobalQueryFilters(modelBuilder);
         }
 
+        #region "Soft Delete"
+
+        private void SetGlobalQueryFilters(ModelBuilder modelBuilder)
+        {
+            //This feature was introduced in EF Core 2.0
+            //https://docs.microsoft.com/en-us/ef/core/querying/filters
+            modelBuilder.Entity<Album>().HasQueryFilter(q => !q.IsDeleted);
+            modelBuilder.Entity<Genre>().HasQueryFilter(q => !q.IsDeleted);
+            modelBuilder.Entity<Artist>().HasQueryFilter(q => !q.IsDeleted);
+            modelBuilder.Entity<ArtistBasicInfo>().HasQueryFilter(q => !q.IsDeleted);
+            modelBuilder.Entity<Track>().HasQueryFilter(q => !q.IsDeleted);
+
+        }
+        
+        public override int SaveChanges()
+        {
+            UpdateSoftDeleteStatuses();
+            return base.SaveChanges();
+        }
+        
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+        {
+            UpdateSoftDeleteStatuses();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+        
+        private void UpdateSoftDeleteStatuses()
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.CurrentValues["IsDeleted"] = false;
+                        break;
+                    case EntityState.Deleted:
+                        entry.State = EntityState.Modified;
+                        entry.CurrentValues["IsDeleted"] = true;
+                        break;
+                }
+                
+            }
+        }
+       
+        #endregion
 
 
     }

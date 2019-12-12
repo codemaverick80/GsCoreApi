@@ -7,6 +7,7 @@ namespace GsCore.Api.Services.Repository.Interfaces
     public interface IAlbumRepository:IDisposable
     {
       Task<Album> GetAlbumAsync(Guid albumId);
+      Task<Track> GetTrack(Guid albumId, Guid trackId);
       Task<IEnumerable<Album>> GetAlbumsAsync(int pageIndex = 1, int pageSize = 10);
       Task<IEnumerable<Track>> GetTracksByAlbumAsync(Guid albumId);
       Task<Track> GetTrack(Guid trackId);
@@ -17,5 +18,8 @@ namespace GsCore.Api.Services.Repository.Interfaces
       bool TrackExists(Guid trackId, Guid albumId);
       void UpdateAlbum(Album album);
       void UpdateTrack(Track track);
+      void Delete(Album album);
+      void DeleteTrack(Track track);
+     
     }
 }

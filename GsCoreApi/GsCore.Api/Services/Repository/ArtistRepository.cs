@@ -48,7 +48,7 @@ namespace GsCore.Api.Services.Repository
         {
             IQueryable<Album> query = _context.Set<Album>();
 
-            var result = query.Where(a => a.ArtistId == artistId && a.IsDeleted==false);
+            var result = query.Where(a => a.ArtistId == artistId);
 
             return await result.ToListAsync();
         }
@@ -59,7 +59,7 @@ namespace GsCore.Api.Services.Repository
 
             var result = query
                 .Include(a=>a.ArtistBasicInfo)
-                .Where(a => a.Id == artistId && a.IsDeleted==false);
+                .Where(a => a.Id == artistId);
 
             return await result.FirstOrDefaultAsync();
         }
@@ -71,7 +71,7 @@ namespace GsCore.Api.Services.Repository
             var result=query
                 .Include(a => a.ArtistBasicInfo)
                 .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize).Where(a=>a.IsDeleted==false);
+                .Take(pageSize);
 
             return await result.ToListAsync();
         }
@@ -83,7 +83,7 @@ namespace GsCore.Api.Services.Repository
 
         public bool ArtistExists(Guid artistId)
         {
-            return _context.Set<Artist>().Any(a => a.Id == artistId && a.IsDeleted==false);
+            return _context.Set<Artist>().Any(a => a.Id == artistId);
         }
 
         public bool ArtistBasicInfoExists(Guid artistId)
@@ -108,6 +108,15 @@ namespace GsCore.Api.Services.Repository
         public void UpdateArtistBasicInfo(ArtistBasicInfo artistBasicInfo)
         {
             //no code implemented
+        }
+
+        public void Delete(Artist artist)
+        {
+            _context.Artist.Remove(artist);
+            if (artist.ArtistBasicInfo != null)
+            {
+                _context.ArtistBasicInfo.Remove(artist.ArtistBasicInfo);
+            }
         }
     }
 }

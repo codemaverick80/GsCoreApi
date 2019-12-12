@@ -22,7 +22,8 @@ namespace GsCore.Api.Services.Repository
             IQueryable<Album> query = _context.Set<Album>();
 
             //// Build Query
-            var result = query.Where(a => a.Id == albumId);
+            var result = query.Include(a=>a.Track)
+                .Where(a => a.Id == albumId);
 
             //// execute query and return the result
             return await result.FirstOrDefaultAsync();
@@ -57,6 +58,13 @@ namespace GsCore.Api.Services.Repository
 
             var result = query.Where(t => t.Id == trackId);
 
+            return await result.FirstOrDefaultAsync();
+        }
+
+        public async Task<Track> GetTrack(Guid albumId, Guid trackId)
+        {
+            IQueryable<Track> query = _context.Set<Track>();
+            var result = query.Where(t => t.Id == trackId && t.AlbumId==albumId);
             return await result.FirstOrDefaultAsync();
         }
 
@@ -107,6 +115,29 @@ namespace GsCore.Api.Services.Repository
             _context.Add(track);
 
         }
+
+        public void Delete(Album album)
+        {
+            if (album == null)
+            {
+                throw new ArgumentNullException(nameof(album));
+            }
+            _context.Album.Remove(album);
+            if (album.Track != null)
+            {
+                _context.Track.RemoveRange(album.Track);
+            }
+        }
+
+        public void DeleteTrack(Track track)
+        {
+            if (track == null)
+            {
+                throw new ArgumentNullException(nameof(track));
+            }
+            _context.Track.Remove(track);
+        }
+
 
         #region "Disposing"
 

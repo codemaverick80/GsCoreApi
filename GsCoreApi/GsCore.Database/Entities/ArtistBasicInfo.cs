@@ -8,7 +8,7 @@ namespace GsCore.Database.Entities
         public string Born { get; set; }
         public string Died { get; set; }
         public string AlsoKnownAs { get; set; }
-
+        public bool IsDeleted { get; set; }
         public virtual Artist Artist { get; set; }
     }
 }

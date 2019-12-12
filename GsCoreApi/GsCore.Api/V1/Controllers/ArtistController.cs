@@ -364,7 +364,20 @@ namespace GsCore.Api.V1.Controllers
 
         #region "DELETE Request"
 
+        /* DO NOT expose delete endpoint */
+        ////[HttpDelete("{artistId}")]
+        ////public async Task<ActionResult> Delete(Guid artistId)
+        ////{
+        ////    var artistFromRepo = await _artistRepository.GetArtistsAsync(artistId);
+        ////    if (artistFromRepo == null)
+        ////    {
+        ////        return NotFound();
+        ////    }
+        ////    _artistRepository.Delete(artistFromRepo);
+        ////    await _artistRepository.SaveAsync();
 
+        ////    return NoContent();
+        ////}
 
         #endregion
 

@@ -262,17 +262,20 @@ namespace GsCore.Api.V1.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{genreId}")]
-        public ActionResult DeleteGenre(Guid genreId)
-        {
-            if (!_genreRepository.GenreExists(genreId))
-            {
-                return NotFound();
-            }
-            //TODO: Check if any album has this genre id
-
-            return NoContent();
-        }
+        /* DO NOT expose delete endpoint */
+        ////[HttpDelete("{genreId}")]
+        ////public async Task<ActionResult> DeleteGenre(Guid genreId)
+        ////{
+        ////   var genreFromRepo =await _genreRepository.GetGenre(genreId);
+        ////    if (genreFromRepo == null)
+        ////    {
+        ////        return NotFound();
+        ////    }
+        ////    //Cascade on delete is ON by default 
+        ////    _genreRepository.Delete(genreFromRepo);
+        ////    await _genreRepository.SaveAsync();
+        ////    return NoContent();
+        ////}
 
 
 

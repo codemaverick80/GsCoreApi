@@ -355,10 +355,35 @@ namespace GsCore.Api.V1.Controllers
 
         #region "DELETE Request"
 
+        /* DO NOT expose delete endpoint */
+        //////Delete Track :api/v1/albums/2/tracks/3
 
-        //Delete Track :api/v1/albums/2/tracks/3
+        ////[HttpDelete("{albumId}/tracks/{trackId}")]
+        ////public async Task<ActionResult> DeleteTrack(Guid albumId, Guid trackId)
+        ////{
+        ////    var trackFromRepo = await _albumRepository.GetTrack(albumId, trackId);
+        ////    if (trackFromRepo == null)
+        ////    {
+        ////        return NotFound();
+        ////    }
+        ////    _albumRepository.DeleteTrack(trackFromRepo);
+        ////    await _albumRepository.SaveAsync();
+        ////    return NoContent();
+        ////}
+        //////Delete Album: api/v1/albums/2
 
-        //Delete Album: api/v1/albums/2
+        ////[HttpDelete("{albumId}")]
+        ////public async Task<ActionResult> Delete(Guid albumId)
+        ////{
+        ////    var albumFromRepo = await _albumRepository.GetAlbumAsync(albumId);
+        ////    if (albumFromRepo == null)
+        ////    {
+        ////        return NotFound();
+        ////    }
+        ////    _albumRepository.Delete(albumFromRepo);
+        ////    await _albumRepository.SaveAsync();
+        ////    return NoContent();
+        ////}
 
 
         #endregion

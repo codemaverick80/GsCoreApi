@@ -14,5 +14,6 @@ namespace GsCore.Api.Services.Repository.Interfaces
      Task<bool> SaveAsync();
      bool GenreExists(Guid genreId);
      void UpdateGenre(Genre genre);
+     void Delete(Genre genre);
    }
 }

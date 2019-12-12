@@ -17,7 +17,7 @@ namespace GsCore.Api.Services.Repository.Interfaces
         bool ArtistBasicInfoExists(Guid artistId);
         void UpdateArtist(Artist artist);
         void UpdateArtistBasicInfo(ArtistBasicInfo artistBasicInfo);
-
         Task<ArtistBasicInfo> GetArtistBasicInfo(Guid artistId);
+        void Delete(Artist artist);
     }
 }

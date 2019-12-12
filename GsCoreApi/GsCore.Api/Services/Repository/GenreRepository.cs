@@ -69,6 +69,11 @@ namespace GsCore.Api.Services.Repository
         }
 
 
+        public void Delete(Genre genre)
+        {
+            _context.Genre.Remove(genre);
+        }
+
         public void Dispose()
         {
             Dispose(true);
