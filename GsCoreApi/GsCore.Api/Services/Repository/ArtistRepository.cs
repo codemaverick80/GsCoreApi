@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GsCore.Api.Services.Repository.Interfaces;
+using GsCore.Api.V1.Helpers;
+using GsCore.Api.V1.ResourceParameters;
 using GsCore.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,27 +16,27 @@ namespace GsCore.Api.Services.Repository
 
         public ArtistRepository(GsDbContext context)
         {
-            _context = context?? throw new ArgumentNullException(nameof(context));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
 
         public void AddArtist(Artist artist)
         {
-            if (artist == null) { throw new  ArgumentNullException(nameof(artist));}
+            if (artist == null) { throw new ArgumentNullException(nameof(artist)); }
             _context.Add(artist);
         }
 
         public void AddArtistBasicInfo(ArtistBasicInfo basicInfo)
         {
             if (basicInfo == null) { throw new ArgumentNullException(nameof(basicInfo)); }
-            
+
             _context.ArtistBasicInfo.Add(basicInfo);
         }
 
         public void Dispose()
         {
-           Dispose(true);
-           GC.SuppressFinalize(this);
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
         protected virtual void Dispose(bool disposing)
         {
@@ -58,22 +60,52 @@ namespace GsCore.Api.Services.Repository
             IQueryable<Artist> query = _context.Set<Artist>();
 
             var result = query
-                .Include(a=>a.ArtistBasicInfo)
+                .Include(a => a.ArtistBasicInfo)
                 .Where(a => a.Id == artistId);
 
             return await result.FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Artist>> GetArtistsAsync(int pageIndex = 1, int pageSize = 10)
+        //public async Task<IEnumerable<Artist>> GetArtistsAsync(int pageIndex = 1, int pageSize = 10)
+        //{
+        //    IQueryable<Artist> query = _context.Set<Artist>();
+
+        //    var result=query
+        //        .Include(a => a.ArtistBasicInfo)
+        //        .Skip((pageIndex - 1) * pageSize)
+        //        .Take(pageSize);
+
+        //    return await result.ToListAsync();
+        //}
+
+        public async Task<PagedList<Artist>> GetArtistsAsync(ArtistResourceParameters artistResourceParameters)
         {
+            //if (artistResourceParameters == null)
+            //{
+            //    throw new ArgumentNullException(nameof(artistResourceParameters));
+            //}
+
             IQueryable<Artist> query = _context.Set<Artist>();
 
-            var result=query
-                .Include(a => a.ArtistBasicInfo)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize);
+            if (!string.IsNullOrWhiteSpace(artistResourceParameters.SearchQuery))
+            {
+                artistResourceParameters.SearchQuery = artistResourceParameters.SearchQuery.Trim();
+                query = query
+                    .Include(a => a.ArtistBasicInfo)
+                    .Where(a => a.ArtistName.Contains(artistResourceParameters.SearchQuery)
+                                || a.ArtistBasicInfo.AlsoKnownAs.Contains(artistResourceParameters.SearchQuery));
+            }
+            /* Paging should be added at the end */
+            /* ====== Basic Pagination */
+            ////query = query
+            ////     .Skip(artistResourceParameters.PageSize * (artistResourceParameters.PageNumber - 1))
+            ////     .Take(artistResourceParameters.PageSize);
+            ////return await query.ToListAsync();
 
-            return await result.ToListAsync();
+
+            return PagedList<Artist>.Create(query, artistResourceParameters.PageNumber, artistResourceParameters.PageSize);
+
+
         }
 
         public async Task<bool> SaveAsync()

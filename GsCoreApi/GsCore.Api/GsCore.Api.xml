@@ -31,13 +31,13 @@
             <param name="artistRepository"></param>
             <param name="mapper"></param>
         </member>
-        <member name="M:GsCore.Api.V1.Controllers.ArtistController.GetArtists">
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.GetArtists(GsCore.Api.V1.ResourceParameters.ArtistResourceParameters)">
             <summary>
             
             </summary>
             <returns></returns>
         </member>
-        <member name="M:GsCore.Api.V1.Controllers.ArtistController.GetArtists(System.Guid)">
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.GetArtist(System.Guid)">
             <summary>
             
             </summary>

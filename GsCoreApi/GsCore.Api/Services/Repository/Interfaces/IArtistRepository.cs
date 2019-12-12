@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GsCore.Api.V1.Helpers;
+using GsCore.Api.V1.ResourceParameters;
 using GsCore.Database.Entities;
 namespace GsCore.Api.Services.Repository.Interfaces
 {
    public interface IArtistRepository: IDisposable
     {
         Task<Artist> GetArtistsAsync(Guid artistId);
-        Task<IEnumerable<Artist>> GetArtistsAsync(int pageIndex = 1, int pageSize = 10);
+       
+        Task<PagedList<Artist>> GetArtistsAsync(ArtistResourceParameters artistResourceParameters);
+
         Task<IEnumerable<Album>> GetAlbumsByArtistAsync(Guid artistId);
         void AddArtist(Artist artist);
         void AddArtistBasicInfo(ArtistBasicInfo basicInfo);

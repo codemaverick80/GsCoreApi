@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using GsCore.Api.Services.Repository.Interfaces;
@@ -7,6 +8,8 @@ using GsCore.Api.V1.Contracts.Requests.Patch;
 using GsCore.Api.V1.Contracts.Requests.Post;
 using GsCore.Api.V1.Contracts.Requests.Put;
 using GsCore.Api.V1.Contracts.Responses;
+using GsCore.Api.V1.Helpers;
+using GsCore.Api.V1.ResourceParameters;
 using GsCore.Database.Entities;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -48,17 +51,42 @@ namespace GsCore.Api.V1.Controllers
         /*
         * GET: /api/v{version}/artists
        */
-        [HttpGet]
-        public async Task<ActionResult<ArtistGetResponse[]>> GetArtists()
+        [HttpGet(Name ="GetArtists")]
+        public async Task<ActionResult<ArtistGetResponse[]>> GetArtists(
+            [FromQuery] ArtistResourceParameters artistResourceParameters)
         {
-            var artistEntity = await _artistRepository.GetArtistsAsync();
-            if (!artistEntity.Any())
+            var artistFromRepo = await _artistRepository.GetArtistsAsync(artistResourceParameters);
+           
+            if (!artistFromRepo.Any())
             {
                 return NotFound();
 
             }
-            return Ok(_mapper.Map<ArtistGetResponse[]>(artistEntity));
+
+            #region "Pagination Metadata"
+            
+            var previousPageLink = artistFromRepo.HasPrevious ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.PreviousPage): null;
+
+            var nextPageLink = artistFromRepo.HasNext ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.NextPage) : null;
+
+            var paginationMetadata = new
+            {
+                totalCount=artistFromRepo.TotalCount,
+                pageSize=artistFromRepo.PageSize, 
+                currentPage=artistFromRepo.CurrentPage,
+                totalPage=artistFromRepo.TotalPages,
+                previousPageLink=previousPageLink,
+                nextPageLink=nextPageLink
+            };
+            // Add X-Pagination as response header
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
+            #endregion
+
+            return Ok(_mapper.Map<ArtistGetResponse[]>(artistFromRepo));
         }
+
+        
 
 
         /// <summary>
@@ -70,7 +98,7 @@ namespace GsCore.Api.V1.Controllers
          * GET: /api/v{version}/artists/{artistId}
         */
         [HttpGet(ApiRoutes.ArtistsRoute.Get, Name = "GetArtist")]
-        public async Task<ActionResult<ArtistGetResponse>> GetArtists(Guid artistId)
+        public async Task<ActionResult<ArtistGetResponse>> GetArtist(Guid artistId)
         {
 
             var artistEntity = await _artistRepository.GetArtistsAsync(artistId);
@@ -381,6 +409,9 @@ namespace GsCore.Api.V1.Controllers
 
         #endregion
 
+
+        #region "PATCH Validation"
+        
         public override ActionResult ValidationProblem(
             [ActionResultObjectValue]ModelStateDictionary modelStateDictionary)
         {
@@ -388,6 +419,39 @@ namespace GsCore.Api.V1.Controllers
             return (ActionResult)options.Value.InvalidModelStateResponseFactory(ControllerContext);
         }
 
+        #endregion
+
+        #region Create Resource Uri"
+        
+        private string CreateArtistsResourceUri(ArtistResourceParameters artistResourceParameters, ResourceUriType type)
+        {
+            switch (type)
+            {
+                case ResourceUriType.PreviousPage:
+                    return Url.Link("GetArtists", new
+                    {
+                        pageNumber = artistResourceParameters.PageNumber - 1,
+                        pageSize = artistResourceParameters.PageSize,
+                        searchQuery = artistResourceParameters.SearchQuery
+                    });
+                case ResourceUriType.NextPage:
+                    return Url.Link("GetArtists", new
+                    {
+                        pageNumber = artistResourceParameters.PageNumber + 1,
+                        pageSize = artistResourceParameters.PageSize,
+                        searchQuery = artistResourceParameters.SearchQuery
+                    });
+                default:
+                    return Url.Link("GetArtists", new
+                    {
+                        pageNumber = artistResourceParameters.PageNumber,
+                        pageSize = artistResourceParameters.PageSize,
+                        searchQuery = artistResourceParameters.SearchQuery
+                    });
+            }
+        }
+
+        #endregion
 
     }
 }
