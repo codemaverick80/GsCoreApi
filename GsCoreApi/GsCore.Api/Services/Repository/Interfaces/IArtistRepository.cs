@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GsCore.Api.V1.Helpers;
+﻿using GsCore.Api.V1.Helpers;
 using GsCore.Api.V1.ResourceParameters;
 using GsCore.Database.Entities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 namespace GsCore.Api.Services.Repository.Interfaces
 {
-   public interface IArtistRepository: IDisposable
+    public interface IArtistRepository: IDisposable
     {
         Task<Artist> GetArtistsAsync(Guid artistId);
        
