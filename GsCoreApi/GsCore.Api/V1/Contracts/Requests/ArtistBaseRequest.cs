@@ -4,17 +4,24 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using GsCore.Api.V1.Contracts.Requests.Post;
+using GsCore.Api.V1.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace GsCore.Api.V1.Contracts.Requests
 {
+    [ArtistMustHaveUniqueFirstNameAndLastName]
     public abstract class ArtistBaseRequest
     {
-       // public Guid Id { get; set; }
-
+      
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+
+        [MaxLength(100)]
+        public string LastName { get; set; }
+
+        [MaxLength(50)]
+        public string MiddleName { get; set; }
 
         [MaxLength(50)]
         public virtual string YearActive { get; set; }

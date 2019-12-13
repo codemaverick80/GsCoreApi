@@ -9,7 +9,7 @@ namespace GsCore.Api.V1.ValidationAttributes
 {
     public class GenreNameMustBeDifferentFromDescriptionAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, //object is the object to validate (i.e. GenreCreateRequest dto)
+        protected override ValidationResult IsValid(object value, //object is the object to validate (i.e. GenreBaseRequest dto)
             ValidationContext validationContext)
         {
 
@@ -17,10 +17,7 @@ namespace GsCore.Api.V1.ValidationAttributes
             
             if (genre.Name == genre.Description)
             {
-                return new ValidationResult(
-                    "Genre description should be different from the name",
-                    new[] {nameof(GenreBaseRequest) }
-               );
+                return new ValidationResult("Genre description should be different from the name",new[] {nameof(GenreBaseRequest) });
             }
 
             return ValidationResult.Success;
@@ -30,20 +27,20 @@ namespace GsCore.Api.V1.ValidationAttributes
 
     #region "Custom Attribute - Class-level input validation"
 
-    
+
     //public class GenreNameMustBeDifferentFromDescriptionAttribute : ValidationAttribute
     //{
-    //    protected override ValidationResult IsValid(object value, //object is the object to validate (i.e. GenreCreateRequest dto)
+    //    protected override ValidationResult IsValid(object value, //object is the object to validate (i.e. GenreBaseRequest dto)
     //        ValidationContext validationContext)
     //    {
 
-    //        var genre = (GenreCreateRequest)validationContext.ObjectInstance;
+    //        var genre = (GenreBaseRequest)validationContext.ObjectInstance;
 
     //        if (genre.Name == genre.Description)
     //        {
     //            return new ValidationResult(
     //                "Genre description should be different from the name",
-    //                new[] { nameof(GenreCreateRequest) }
+    //                new[] { nameof(GenreBaseRequest) }
     //            );
     //        }
 

@@ -92,8 +92,8 @@ namespace GsCore.Api.Services.Repository
                 artistResourceParameters.SearchQuery = artistResourceParameters.SearchQuery.Trim();
                 query = query
                     .Include(a => a.ArtistBasicInfo)
-                    .Where(a => a.ArtistName.Contains(artistResourceParameters.SearchQuery)
-                                || a.ArtistBasicInfo.AlsoKnownAs.Contains(artistResourceParameters.SearchQuery));
+                    .Where(a => a.FirstName.Contains(artistResourceParameters.SearchQuery) 
+                                || a.LastName.Contains(artistResourceParameters.SearchQuery));
             }
             /* Paging should be added at the end */
             /* ====== Basic Pagination */

@@ -11,6 +11,11 @@ namespace GsCore.Database.Entities
         public string Performer { get; set; }
         public string Featuring { get; set; }
         public string Duration { get; set; }
+
+        public Guid? CreatedBy { get; set; }
+        public DateTime? DateModified { get; set; }
+        public Guid? ModifiedBy { get; set; }
+      
         public bool IsDeleted { get; set; }
         public virtual Album Album { get; set; }
     }

@@ -289,6 +289,7 @@ namespace GsCore.Api.V1.Controllers
                 return ValidationProblem(ModelState);
             }
             _mapper.Map(albumToPatch, albumFromRepo);
+            albumFromRepo.DateModified=DateTime.UtcNow;
             _albumRepository.UpdateAlbum(albumFromRepo);
             await _albumRepository.SaveAsync();
             return NoContent();
@@ -346,6 +347,7 @@ namespace GsCore.Api.V1.Controllers
                 return ValidationProblem(ModelState);
             }
             _mapper.Map(trackToPatch, trackFromRepo);
+            trackFromRepo.DateModified=DateTime.UtcNow;
             _albumRepository.UpdateTrack(trackFromRepo);
             await _albumRepository.SaveAsync();
             return NoContent();

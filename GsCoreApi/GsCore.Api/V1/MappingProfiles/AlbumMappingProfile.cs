@@ -13,8 +13,8 @@ namespace GsCore.Api.V1.MappingProfiles
         {
             CreateMap<Album, AlbumGetResponse>()
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => src.AlbumName));
-            CreateMap<AlbumGetResponse, Album>()
-                .ForMember(dest => dest.AlbumName, source => source.MapFrom(src => src.Name));
+            //CreateMap<AlbumGetResponse, Album>()
+            //    .ForMember(dest => dest.AlbumName, source => source.MapFrom(src => src.Name));
 
             CreateMap<AlbumPostRequest, Album>()
                 .ForMember(dest => dest.AlbumName, source => source.MapFrom(src => src.Name));
@@ -24,8 +24,8 @@ namespace GsCore.Api.V1.MappingProfiles
 
             CreateMap<AlbumPatchRequest, Album>()
                 .ForMember(dest => dest.AlbumName, source => source.MapFrom(src => src.Name));
-            CreateMap<Album, AlbumPatchRequest>()
-                .ForMember(dest => dest.Name, source => source.MapFrom(src => src.AlbumName));
+            //CreateMap<Album, AlbumPatchRequest>()
+            //    .ForMember(dest => dest.Name, source => source.MapFrom(src => src.AlbumName));
 
         }
     }

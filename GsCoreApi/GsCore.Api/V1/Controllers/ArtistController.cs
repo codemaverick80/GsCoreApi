@@ -332,6 +332,7 @@ namespace GsCore.Api.V1.Controllers
             }
 
             _mapper.Map(artistToPatch, artistFromRepo);
+            artistFromRepo.DateModified=DateTime.UtcNow;
             _artistRepository.UpdateArtist(artistFromRepo);
             await _artistRepository.SaveAsync();
             return NoContent();
@@ -384,6 +385,7 @@ namespace GsCore.Api.V1.Controllers
             }
 
             _mapper.Map(artistInfoToPatch, artistInfoFromRepo);
+            artistInfoFromRepo.DateModified=DateTime.UtcNow;
             _artistRepository.UpdateArtistBasicInfo(artistInfoFromRepo);
             await _artistRepository.SaveAsync();
             return NoContent();

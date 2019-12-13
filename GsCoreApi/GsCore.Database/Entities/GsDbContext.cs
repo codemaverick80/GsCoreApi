@@ -82,9 +82,13 @@ namespace GsCore.Database.Entities
              {
                  entity.Property(e => e.Id).ValueGeneratedNever();
 
-                 entity.Property(e => e.ArtistName)
+                 entity.Property(e => e.FirstName)
                      .IsRequired()
                      .HasMaxLength(100);
+                
+                 entity.Property(e => e.LastName).HasMaxLength(100);
+
+                 entity.Property(e => e.MiddleName).HasMaxLength(50);
 
                  entity.Property(e => e.LargeThumbnail).HasMaxLength(100);
 

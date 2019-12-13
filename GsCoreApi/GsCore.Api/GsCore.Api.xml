@@ -87,6 +87,21 @@
             NOTE: PUT will update full entity, which is not good if we have lots of fields.
             PATCH is best for partial entity update
         </member>
+        <member name="T:GsCore.Api.V1.Helpers.PagedList`1">
+            <summary>
+            Reusable PagedList
+            </summary>
+            <typeparam name="T">Entity type</typeparam>
+        </member>
+        <member name="M:GsCore.Api.V1.Helpers.PagedList`1.Create(System.Linq.IQueryable{`0},System.Int32,System.Int32)">
+            <summary>
+            Creates PagedList
+            </summary>
+            <param name="source">IQueryable of type entity</param>
+            <param name="pageNumber">Page Number</param>
+            <param name="pageSize">Page Size</param>
+            <returns>PagedList of type entity, Total record count, Page Number and Page Size</returns>
+        </member>
         <member name="F:GsCore.Api.V2.ApiRoutes.GenresRoute.GetAll">
             <summary>
             GET: api/v2/genres

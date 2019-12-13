@@ -1,0 +1,39 @@
+﻿
+/* Split ArtistName in First and Last Name */
+SELECT [Id]
+      ,[ArtistName]
+	  ,SUBSTRING([ArtistName], 1, NULLIF(CHARINDEX(' ', [ArtistName]) - 1, -1)) AS [FirstName],
+       SUBSTRING([ArtistName], CHARINDEX(' ', [ArtistName]) + 1, LEN([ArtistName])) AS [LastName]
+FROM [GeetSangeet_LocalTest].[dbo].[Artist] 
+
+
+/* Split ArtistName in First , Middle and Last Name */
+
+SELECT [Id]
+      ,[ArtistName]
+	  , (CONVERT([varchar](60),ltrim(substring([ArtistName],(1),isnull(nullif(charindex(' ',[ArtistName]),(0)),(1000)))),0)) AS [FirstName]
+	  , (CONVERT([varchar](60),ltrim(substring([ArtistName],
+                charindex(' ',[ArtistName]),case when (charindex(' ',
+                [ArtistName],charindex(' ',[ArtistName])+(1))-charindex(' ',[ArtistName]))<=(0) 
+                then (0) else charindex(' ',[ArtistName],charindex(' ',
+                [ArtistName])+(1))-charindex(' ',[ArtistName]) end)),0)) AS MiddleName
+	, (CONVERT([varchar](60),ltrim(substring([ArtistName],
+                isnull(nullif(charindex(' ',[ArtistName],charindex(' ',[ArtistName])+(1)),(0)),
+                charindex(' ',[ArtistName])),case when charindex(' ',[ArtistName])=(0) 
+                then (0) else len([ArtistName]) end)),0)) AS LastName     
+FROM [GeetSangeet_LocalTest].[dbo].[Artist] 
+
+
+
+/* STEP 1: Update query */
+update  [GeetSangeet_LocalTest].[dbo].[Artist] 
+set FirstName=SUBSTRING([ArtistName], 1, NULLIF(CHARINDEX(' ', [ArtistName]) - 1, -1))
+,LastName=SUBSTRING([ArtistName], CHARINDEX(' ', [ArtistName]) + 1, LEN([ArtistName]))
+where id=id
+
+/* STEP 2: FirstName=LastName where FirstName is null */
+update [GeetSangeet_LocalTest].[dbo].[Artist] set FirstName=LastName where FirstName is null
+
+
+/* STEP 3: LastName=null where firstname=lastname
+update [GeetSangeet_LocalTest].[dbo].[Artist] set LastName=null where FirstName=LastName
