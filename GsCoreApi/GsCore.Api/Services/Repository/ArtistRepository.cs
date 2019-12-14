@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GsCore.Api.Services.Repository.Interfaces;
+using GsCore.Api.V1.Contracts.Responses;
 using GsCore.Api.V1.Helpers;
 using GsCore.Api.V1.ResourceParameters;
 using GsCore.Database.Entities;
@@ -13,9 +14,11 @@ namespace GsCore.Api.Services.Repository
     public class ArtistRepository : IArtistRepository
     {
         private readonly GsDbContext _context;
+        private IPropertyMappingService _propertyMappingService;
 
-        public ArtistRepository(GsDbContext context)
+        public ArtistRepository(GsDbContext context, IPropertyMappingService propertyMappingService)
         {
+            _propertyMappingService = propertyMappingService??throw new ArgumentNullException(nameof(propertyMappingService));
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
@@ -95,17 +98,49 @@ namespace GsCore.Api.Services.Repository
                     .Where(a => a.FirstName.Contains(artistResourceParameters.SearchQuery) 
                                 || a.LastName.Contains(artistResourceParameters.SearchQuery));
             }
-            /* Paging should be added at the end */
-            /* ====== Basic Pagination */
+
+            #region "Sorting Artist"
+
+
+            #region "Not very useful and reusable"
+            ////if (!string.IsNullOrWhiteSpace(artistResourceParameters.OrderBy))
+            ////{
+            ////    if (artistResourceParameters.OrderBy.ToLowerInvariant() == "name")
+            ////    {
+            ////        query = query.OrderBy(a => a.FirstName).ThenBy(a => a.LastName);
+            ////    }
+            ////}
+            #endregion
+
+            //Install:  System.Linq.Dynamic.Core
+
+            if (!string.IsNullOrWhiteSpace(artistResourceParameters.OrderBy)) 
+            {
+               //get property mapping dictionary
+                var artistPropertyMappingDictionary =
+                _propertyMappingService.GetPropertyMapping<ArtistGetResponse, Artist>();
+
+                query=query.ApplySort(artistResourceParameters.OrderBy, artistPropertyMappingDictionary);
+            }
+
+            #endregion
+
+
+            #region "Pagination"
+            /* ========== Pagination should be added at the end ========== */
+
+            #region "Basic Pagination"
             ////query = query
             ////     .Skip(artistResourceParameters.PageSize * (artistResourceParameters.PageNumber - 1))
             ////     .Take(artistResourceParameters.PageSize);
             ////return await query.ToListAsync();
-
+            #endregion
 
             return PagedList<Artist>.Create(query, artistResourceParameters.PageNumber, artistResourceParameters.PageSize);
 
+            #endregion
 
+           
         }
 
         public async Task<bool> SaveAsync()

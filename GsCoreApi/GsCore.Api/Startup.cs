@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
+using GsCore.Api.Services;
 using GsCore.Api.Services.Repository;
 using GsCore.Api.Services.Repository.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -35,6 +36,9 @@ namespace GsCore.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //register propertyMappingService
+            services.AddTransient<IPropertyMappingService, PropertyMappingService>();
+            
             //var gid = Guid.NewGuid();
             services.AddAutoMapper(typeof(Startup));
 

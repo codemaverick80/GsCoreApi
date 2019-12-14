@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Runtime.InteropServices;
+using AutoMapper;
 using GsCore.Api.V1.Contracts.Requests;
 using GsCore.Api.V1.Contracts.Requests.Patch;
 using GsCore.Api.V1.Contracts.Requests.Post;
@@ -15,6 +16,7 @@ namespace GsCore.Api.V1.MappingProfiles
 
             CreateMap<Artist, ArtistGetResponse>()
                 .ForMember(dest => dest.Name, source => source.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                .ForMember(dest => dest.UpdatedDate, source => source.MapFrom(src => src.DateModified))
                 .ForMember(dest => dest.BasicInfo, source => source.MapFrom(src => src.ArtistBasicInfo));
            
             //CreateMap<ArtistGetResponse, Artist>()

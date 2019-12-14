@@ -14,6 +14,11 @@ namespace GsCore.Api.V1.Contracts.Responses
         public string SmallThumbnail { get; set; }
         public string LargeThumbnail { get; set; }
 
+        private DateTime? DateCreated { get; set; }
+        private Guid? CreatedBy { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        private Guid? ModifiedBy { get; set; }
+
         public ArtistBasicInfoGetResponse BasicInfo { get; set; }
     }
 }
