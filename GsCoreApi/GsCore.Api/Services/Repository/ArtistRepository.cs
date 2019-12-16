@@ -103,6 +103,7 @@ namespace GsCore.Api.Services.Repository
 
 
             #region "Not very useful and reusable"
+
             ////if (!string.IsNullOrWhiteSpace(artistResourceParameters.OrderBy))
             ////{
             ////    if (artistResourceParameters.OrderBy.ToLowerInvariant() == "name")
@@ -110,15 +111,18 @@ namespace GsCore.Api.Services.Repository
             ////        query = query.OrderBy(a => a.FirstName).ThenBy(a => a.LastName);
             ////    }
             ////}
+            
             #endregion
 
-            //Install:  System.Linq.Dynamic.Core
+            //// Install:  System.Linq.Dynamic.Core
+            //// PropertyMappingValue.cs
+            //// PropertyMappingService.cs (IPropertyMappingService.cs)
+            //// PropertyMapping.cs (IPropertyMapping.cs)
 
             if (!string.IsNullOrWhiteSpace(artistResourceParameters.OrderBy)) 
             {
                //get property mapping dictionary
-                var artistPropertyMappingDictionary =
-                _propertyMappingService.GetPropertyMapping<ArtistGetResponse, Artist>();
+                var artistPropertyMappingDictionary =_propertyMappingService.GetPropertyMapping<ArtistGetResponse, Artist>();
 
                 query=query.ApplySort(artistResourceParameters.OrderBy, artistPropertyMappingDictionary);
             }

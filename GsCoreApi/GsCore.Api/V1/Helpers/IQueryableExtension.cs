@@ -9,8 +9,7 @@ namespace GsCore.Api.V1.Helpers
 {
     public static class IQueryableExtension
     {
-        public static IQueryable<T> ApplySort<T>(this IQueryable<T> source, string orderBy,
-            Dictionary<string, PropertyMappingValue> mappingDictionary)
+        public static IQueryable<T> ApplySort<T>(this IQueryable<T> source, string orderBy, Dictionary<string, PropertyMappingValue> mappingDictionary)
         {
 
             if (source == null)
@@ -45,6 +44,7 @@ namespace GsCore.Api.V1.Helpers
 
                 //remove " asc" or " desc" from the orderByClause, so we get the property name to look for in the mapping dictionary
                 var indexOfFirstSpace = trimmedOrderByClause.IndexOf(" ");
+
                 var propertyName = indexOfFirstSpace == -1
                     ? trimmedOrderByClause
                     : trimmedOrderByClause.Remove(indexOfFirstSpace);
@@ -71,6 +71,7 @@ namespace GsCore.Api.V1.Helpers
                     {
                         orderDescending = !orderDescending;
                     }
+
                     source = source.OrderBy(destinationProperty + (orderDescending ? " descending" : " ascending"));
                 }
             }

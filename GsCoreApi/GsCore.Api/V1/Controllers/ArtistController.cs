@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
+using GsCore.Api.Services;
 using GsCore.Api.Services.Repository.Interfaces;
 using GsCore.Api.V1.Contracts.Requests.Patch;
 using GsCore.Api.V1.Contracts.Requests.Post;
@@ -30,16 +31,19 @@ namespace GsCore.Api.V1.Controllers
     {
         private readonly IArtistRepository _artistRepository;
         private readonly IMapper _mapper;
+        private IPropertyMappingService _propertyMappingService;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="artistRepository"></param>
         /// <param name="mapper"></param>
-        public ArtistController(IArtistRepository artistRepository, IMapper mapper)
+        public ArtistController(IArtistRepository artistRepository, IMapper mapper, IPropertyMappingService propertyMappingService)
         {
+           
             _artistRepository = artistRepository ?? throw new ArgumentNullException(nameof(artistRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
         }
 
         #region "GET Request"
@@ -52,9 +56,15 @@ namespace GsCore.Api.V1.Controllers
         * GET: /api/v{version}/artists
        */
         [HttpGet(Name ="GetArtists")]
-        public async Task<ActionResult<ArtistGetResponse[]>> GetArtists(
-            [FromQuery] ArtistResourceParameters artistResourceParameters)
+        public async Task<ActionResult<ArtistGetResponse[]>> GetArtists([FromQuery] ArtistResourceParameters artistResourceParameters)
         {
+
+            if (!_propertyMappingService.ValidMappingExistsFor<ArtistGetResponse, Artist>(artistResourceParameters
+                .OrderBy))
+            {
+                return BadRequest();
+            }
+
             var artistFromRepo = await _artistRepository.GetArtistsAsync(artistResourceParameters);
            
             if (!artistFromRepo.Any())
@@ -78,7 +88,8 @@ namespace GsCore.Api.V1.Controllers
                 previousPageLink=previousPageLink,
                 nextPageLink=nextPageLink
             };
-            // Add X-Pagination as response header
+
+            /* Add X-Pagination as response header */
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             #endregion
@@ -434,21 +445,27 @@ namespace GsCore.Api.V1.Controllers
                     {
                         pageNumber = artistResourceParameters.PageNumber - 1,
                         pageSize = artistResourceParameters.PageSize,
-                        searchQuery = artistResourceParameters.SearchQuery
+                        searchQuery = artistResourceParameters.SearchQuery,
+                        /* Adding OrderBy Clause to pagination links */
+                        orderBy=artistResourceParameters.OrderBy
                     });
                 case ResourceUriType.NextPage:
                     return Url.Link("GetArtists", new
                     {
                         pageNumber = artistResourceParameters.PageNumber + 1,
                         pageSize = artistResourceParameters.PageSize,
-                        searchQuery = artistResourceParameters.SearchQuery
+                        searchQuery = artistResourceParameters.SearchQuery,
+                        /* Adding OrderBy Clause to pagination links */
+                        orderBy = artistResourceParameters.OrderBy
                     });
                 default:
                     return Url.Link("GetArtists", new
                     {
                         pageNumber = artistResourceParameters.PageNumber,
                         pageSize = artistResourceParameters.PageSize,
-                        searchQuery = artistResourceParameters.SearchQuery
+                        searchQuery = artistResourceParameters.SearchQuery,
+                        /* Adding OrderBy Clause to pagination links */
+                        orderBy = artistResourceParameters.OrderBy
                     });
             }
         }
