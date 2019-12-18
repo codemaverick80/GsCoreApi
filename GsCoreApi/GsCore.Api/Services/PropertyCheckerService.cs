@@ -27,7 +27,7 @@ namespace GsCore.Api.Services
                 var propertyName = field.Trim();
 
                 // use reflection to check if the property can be
-                // found on T. 
+                // found on T (i.e. T = ArtistGetResponse). 
                 var propertyInfo = typeof(T)
                     .GetProperty(propertyName,
                         BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
@@ -39,7 +39,7 @@ namespace GsCore.Api.Services
                 }
             }
 
-            // all checks out, return true
+            // all fields exists on T object, return true
             return true;
         }
     }
