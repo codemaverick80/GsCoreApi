@@ -27,7 +27,7 @@ namespace GsCore.Api
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("An error occured while seeping the database with data");
+                    Console.WriteLine("An error occured while seeding the database with data");
 
                 }
             }

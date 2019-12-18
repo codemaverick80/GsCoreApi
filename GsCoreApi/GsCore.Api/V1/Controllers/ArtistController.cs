@@ -40,8 +40,8 @@ namespace GsCore.Api.V1.Controllers
         /// </summary>
         /// <param name="artistRepository"></param>
         /// <param name="mapper"></param>
-        public ArtistController(IArtistRepository artistRepository, 
-            IMapper mapper, 
+        public ArtistController(IArtistRepository artistRepository,
+            IMapper mapper,
             IPropertyMappingService propertyMappingService,
             IPropertyCheckerService propertyCheckerService)
         {
@@ -72,7 +72,7 @@ namespace GsCore.Api.V1.Controllers
         //    }
 
         //    var artistFromRepo = await _artistRepository.GetArtistsAsync(artistResourceParameters);
-           
+
         //    if (!artistFromRepo.Any())
         //    {
         //        return NotFound();
@@ -80,7 +80,7 @@ namespace GsCore.Api.V1.Controllers
         //    }
 
         //    #region "Pagination Metadata"
-            
+
         //    var previousPageLink = artistFromRepo.HasPrevious ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.PreviousPage): null;
 
         //    var nextPageLink = artistFromRepo.HasNext ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.NextPage) : null;
@@ -106,7 +106,7 @@ namespace GsCore.Api.V1.Controllers
 
 
         //// Data Shaping
-        
+
         [HttpGet(Name = "GetArtists")]
         public async Task<ActionResult<IEnumerable<ArtistGetResponse>>> GetArtists([FromQuery] ArtistResourceParameters artistResourceParameters)
         {
@@ -135,18 +135,19 @@ namespace GsCore.Api.V1.Controllers
 
             #region "Pagination Metadata"
 
-            var previousPageLink = artistFromRepo.HasPrevious ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.PreviousPage) : null;
+            //var previousPageLink = artistFromRepo.HasPrevious ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.PreviousPage) : null;
 
-            var nextPageLink = artistFromRepo.HasNext ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.NextPage) : null;
+            //var nextPageLink = artistFromRepo.HasNext ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.NextPage) : null;
 
             var paginationMetadata = new
             {
                 totalCount = artistFromRepo.TotalCount,
                 pageSize = artistFromRepo.PageSize,
                 currentPage = artistFromRepo.CurrentPage,
-                totalPage = artistFromRepo.TotalPages,
-                previousPageLink = previousPageLink,
-                nextPageLink = nextPageLink
+                totalPage = artistFromRepo.TotalPages
+                //,
+                //previousPageLink = previousPageLink,
+                //nextPageLink = nextPageLink
             };
 
             /* Add X-Pagination as response header */
@@ -154,10 +155,36 @@ namespace GsCore.Api.V1.Controllers
 
             #endregion
 
+            #region "Links for Authors"
 
+            
 
-            return Ok(_mapper.Map<IEnumerable<ArtistGetResponse>>(artistFromRepo)
-                .ShapeData(artistResourceParameters.Fields));
+           
+            var links = CreateLinksForArtists(artistResourceParameters,artistFromRepo.HasNext,artistFromRepo.HasPrevious);
+
+            var shapedArtist = _mapper.Map<IEnumerable<ArtistGetResponse>>(artistFromRepo)
+                .ShapeData(artistResourceParameters.Fields);
+
+            var shapedArtistWithLinks = shapedArtist.Select(artist =>
+            {
+                var artistAsDisctionary = artist as IDictionary<string, object>;
+                var artistLinks = CreateLinksForArtist((Guid) artistAsDisctionary["Id"], null);
+                artistAsDisctionary.Add("links", artistLinks);
+                return artistAsDisctionary;
+            });
+
+            var linkedCollectionResource = new
+            {
+                value = shapedArtistWithLinks,
+                links
+            };
+
+            return Ok(linkedCollectionResource);
+
+            #endregion
+
+            //return Ok(_mapper.Map<IEnumerable<ArtistGetResponse>>(artistFromRepo)
+            //    .ShapeData(artistResourceParameters.Fields));
 
         }
 
@@ -168,13 +195,13 @@ namespace GsCore.Api.V1.Controllers
         /// </summary>
         /// <param name="artistId"></param>
         /// <returns></returns>
-      
+
         /*
          * GET: /api/v{version}/artists/{artistId}
         */
-       
+
         //TODO: Delete this once Shape data is completed
-       
+
         //[HttpGet(ApiRoutes.ArtistsRoute.Get, Name = "GetArtist")]
         //public async Task<ActionResult<ArtistGetResponse>> GetArtist(Guid artistId)
         //{
@@ -193,22 +220,34 @@ namespace GsCore.Api.V1.Controllers
         */
 
         [HttpGet(ApiRoutes.ArtistsRoute.Get, Name = "GetArtist")]
-        public async Task<ActionResult<ArtistGetResponse>> GetArtist(Guid artistId,string fields)
+        public async Task<ActionResult<ArtistGetResponse>> GetArtist(Guid artistId, string fields)
         {
             // check if consumer has provided correct fields.
             // if not return 400 error (Bad Request) instead of 500 error (Server error)
-            
+
             if (!_propertyCheckerService.TypeHasProperties<ArtistGetResponse>(fields))
             {
                 return BadRequest();
             }
 
             var artistEntity = await _artistRepository.GetArtistsAsync(artistId);
+
             if (artistEntity == null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<ArtistGetResponse>(artistEntity).ShapeData(fields));
+
+
+            var links = CreateLinksForArtist(artistId, fields);
+
+            var linkedResourceToReturn =
+                _mapper.Map<ArtistGetResponse>(artistEntity).ShapeData(fields) as IDictionary<string, object>;
+
+            linkedResourceToReturn.Add("links", links);
+
+            return Ok(linkedResourceToReturn);
+
+            //return Ok(_mapper.Map<ArtistGetResponse>(artistEntity).ShapeData(fields));
         }
 
 
@@ -245,20 +284,51 @@ namespace GsCore.Api.V1.Controllers
         [HttpPost]
         public async Task<ActionResult<ArtistGetResponse>> CreateArtist([FromBody]ArtistPostRequest artistPostRequest)
         {
+            //var artistEntity = _mapper.Map<Artist>(artistPostRequest);
+
+            //artistEntity.Id = Guid.NewGuid();
+
+            //_artistRepository.AddArtist(artistEntity);
+
+            //await _artistRepository.SaveAsync();
+
+            //var artistGetResponse = _mapper.Map<ArtistGetResponse>(artistEntity);
+
+            //return CreatedAtRoute(
+            //    "GetArtist",
+            //    new
+            //    {
+            //        version = HttpContext.GetRequestedApiVersion().ToString(),
+            //        artistId = artistGetResponse.Id
+            //    },
+            //    artistGetResponse);
+
+
             var artistEntity = _mapper.Map<Artist>(artistPostRequest);
+
             artistEntity.Id = Guid.NewGuid();
+            artistEntity.DateCreated=DateTime.UtcNow;
 
             _artistRepository.AddArtist(artistEntity);
+
             await _artistRepository.SaveAsync();
+
             var artistGetResponse = _mapper.Map<ArtistGetResponse>(artistEntity);
+
+            var links = CreateLinksForArtist(artistGetResponse.Id, null);
+
+            var linkedResourceToReturn = artistGetResponse.ShapeData(null) as IDictionary<string,object>;
+
+            linkedResourceToReturn.Add("links",links);
+            
             return CreatedAtRoute(
                 "GetArtist",
                 new
                 {
                     version = HttpContext.GetRequestedApiVersion().ToString(),
-                    artistId = artistGetResponse.Id
+                    artistId = linkedResourceToReturn["Id"]
                 },
-                artistGetResponse);
+                linkedResourceToReturn);
         }
 
 
@@ -271,7 +341,7 @@ namespace GsCore.Api.V1.Controllers
         /*
         * POST: /api/v{version}/artists/{artistId}/basicInfo
         */
-        [HttpPost(ApiRoutes.ArtistsRoute.PostArtistBasicInfo)]
+        [HttpPost(ApiRoutes.ArtistsRoute.PostArtistBasicInfo, Name = "CreateBasicInfo")]
         public async Task<ActionResult<ArtistGetResponse>> CreateBasicInfo(Guid artistId, [FromBody]ArtistBasicInfoPostRequest basicInfo)
         {
 
@@ -436,7 +506,7 @@ namespace GsCore.Api.V1.Controllers
             }
 
             _mapper.Map(artistToPatch, artistFromRepo);
-            artistFromRepo.DateModified=DateTime.UtcNow;
+            artistFromRepo.DateModified = DateTime.UtcNow;
             _artistRepository.UpdateArtist(artistFromRepo);
             await _artistRepository.SaveAsync();
             return NoContent();
@@ -445,7 +515,7 @@ namespace GsCore.Api.V1.Controllers
         /*
          * PATCH: /api/v{version}/artists/{artistId}/basicInfo
         */
-        [HttpPatch(ApiRoutes.ArtistsRoute.PatchArtistBasicInfo, Name= "UpdateArtistInfo")]
+        [HttpPatch(ApiRoutes.ArtistsRoute.PatchArtistBasicInfo, Name = "UpdateArtistInfo")]
         public async Task<ActionResult> PartialArtistBasicInfoUpdate(Guid artistId, JsonPatchDocument<ArtistBasicInfoPatchRequest> patchRequest)
         {
             if (_artistRepository.ArtistExists(artistId) && !_artistRepository.ArtistBasicInfoExists(artistId))
@@ -489,7 +559,7 @@ namespace GsCore.Api.V1.Controllers
             }
 
             _mapper.Map(artistInfoToPatch, artistInfoFromRepo);
-            artistInfoFromRepo.DateModified=DateTime.UtcNow;
+            artistInfoFromRepo.DateModified = DateTime.UtcNow;
             _artistRepository.UpdateArtistBasicInfo(artistInfoFromRepo);
             await _artistRepository.SaveAsync();
             return NoContent();
@@ -499,25 +569,25 @@ namespace GsCore.Api.V1.Controllers
         #region "DELETE Request"
 
         /* DO NOT expose delete endpoint */
-        ////[HttpDelete("{artistId}")]
-        ////public async Task<ActionResult> Delete(Guid artistId)
-        ////{
-        ////    var artistFromRepo = await _artistRepository.GetArtistsAsync(artistId);
-        ////    if (artistFromRepo == null)
-        ////    {
-        ////        return NotFound();
-        ////    }
-        ////    _artistRepository.Delete(artistFromRepo);
-        ////    await _artistRepository.SaveAsync();
+        //[HttpDelete("{artistId}", Name = "DeleteArtist")]
+        //public async Task<ActionResult> Delete(Guid artistId)
+        //{
+        //    var artistFromRepo = await _artistRepository.GetArtistsAsync(artistId);
+        //    if (artistFromRepo == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    _artistRepository.Delete(artistFromRepo);
+        //    await _artistRepository.SaveAsync();
 
-        ////    return NoContent();
-        ////}
+        //    return NoContent();
+        //}
 
         #endregion
 
 
         #region "PATCH Validation"
-        
+
         public override ActionResult ValidationProblem(
             [ActionResultObjectValue]ModelStateDictionary modelStateDictionary)
         {
@@ -528,7 +598,7 @@ namespace GsCore.Api.V1.Controllers
         #endregion
 
         #region Create Resource Uri"
-        
+
         private string CreateArtistsResourceUri(ArtistResourceParameters artistResourceParameters, ResourceUriType type)
         {
             switch (type)
@@ -540,7 +610,7 @@ namespace GsCore.Api.V1.Controllers
                         pageSize = artistResourceParameters.PageSize,
                         searchQuery = artistResourceParameters.SearchQuery,
                         /* Adding OrderBy Clause to pagination links */
-                        orderBy=artistResourceParameters.OrderBy,
+                        orderBy = artistResourceParameters.OrderBy,
                         /* Adding ShapedData pagination links */
                         fields = artistResourceParameters.Fields
 
@@ -556,6 +626,7 @@ namespace GsCore.Api.V1.Controllers
                         /* Adding ShapedData pagination links */
                         fields = artistResourceParameters.Fields
                     });
+                case ResourceUriType.Current:
                 default:
                     return Url.Link("GetArtists", new
                     {
@@ -568,6 +639,93 @@ namespace GsCore.Api.V1.Controllers
                         fields = artistResourceParameters.Fields
                     });
             }
+        }
+
+        #endregion
+
+        #region "Create Links (HATEOAS)"
+
+        private IEnumerable<LinkModel> CreateLinksForArtist(Guid artistId, string fields)
+        {
+            var links = new List<LinkModel>();
+
+            // GET Link
+            if (string.IsNullOrWhiteSpace(fields))
+            {
+                //links.Add(new LinkModel(Url.Link("GetArtist", new { artistId }), "self", "GET"));
+                links.Add(new LinkModel(Url.Link("GetArtist", new
+                {
+                    version = HttpContext.GetRequestedApiVersion().ToString(),
+                    artistId = artistId
+                }), "self", "GET"));
+            }
+            else
+            {
+               // links.Add(new LinkModel(Url.Link("GetArtist", new { artistId, fields }), "self", "GET"));
+
+                links.Add(new LinkModel(Url.Link("GetArtist", new
+                {
+                    version = HttpContext.GetRequestedApiVersion().ToString(),
+                    artistId = artistId,
+                    fields=fields
+                }), "self", "GET"));
+            }
+
+            /* Works only if api does not have versioning implemented */
+            // links.Add(new LinkModel(Url.Link("GetAlbumByArtist", new { artistId }), "albums_by_artist", "GET"));
+
+            /* Works with Api versioning implemented */
+            links.Add(new LinkModel(Url.Link("GetAlbumByArtist",
+                    new
+                    {
+                        version = HttpContext.GetRequestedApiVersion().ToString(),
+                        artistId = artistId
+                    }),
+                "albums_by_artist",
+                "GET"));
+
+            //// DELETE Link
+            //links.Add(new LinkModel(Url.Link("DeleteArtist",
+            //    new
+            //    {
+            //        version = HttpContext.GetRequestedApiVersion().ToString(),
+            //        artistId = artistId
+            //    }), "delete_artist", "DELETE"));
+
+
+            // POST artist basic info
+            links.Add(new LinkModel(Url.Link("CreateBasicInfo",
+                new
+                {
+                    version = HttpContext.GetRequestedApiVersion().ToString(),
+                    artistId = artistId
+                }),
+                "create_artist_basicInfo",
+                "POST"));
+
+
+
+            return links;
+        }
+
+
+
+        private IEnumerable<LinkModel> CreateLinksForArtists(ArtistResourceParameters artistResourceParameters,bool hasNext, bool hasPrevious)
+        {
+            var links = new List<LinkModel>();
+
+            links.Add(new LinkModel(CreateArtistsResourceUri(artistResourceParameters,ResourceUriType.Current),"self","GET"));
+
+            if (hasNext)
+            {
+                links.Add(new LinkModel(CreateArtistsResourceUri(artistResourceParameters,ResourceUriType.NextPage),"nextPage","GET"));
+            }
+            if (hasPrevious)
+            {
+                links.Add(new LinkModel(CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.PreviousPage), "previousPage", "GET"));
+            }
+
+            return links;
         }
 
         #endregion

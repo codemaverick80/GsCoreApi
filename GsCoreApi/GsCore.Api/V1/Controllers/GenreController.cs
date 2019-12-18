@@ -33,7 +33,7 @@ namespace GsCore.Api.V1.Controllers
             _genreRepository = genreRepository??throw new ArgumentNullException(nameof(genreRepository));
         }
        
-        [HttpGet()]
+        [HttpGet(Name = "GetGenres")]
         public async Task<ActionResult<GenreGetResponse[]>> Get()
         {
             var result = await _genreRepository.GetGenres();

@@ -41,7 +41,7 @@ namespace GsCore.Api.V1.Controllers
 
         #region "GET Request"
 
-        [HttpGet]
+        [HttpGet(Name="GetAlbums")]
         public async Task<ActionResult<AlbumGetResponse[]>> GetAlbums()
         {
             var albumsEntity = await _albumRepository.GetAlbumsAsync();

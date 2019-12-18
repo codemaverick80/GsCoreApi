@@ -8,6 +8,7 @@ namespace GsCore.Api.V1.Helpers
     public enum ResourceUriType
     {
         PreviousPage,
-        NextPage
+        NextPage,
+        Current
     }
 }

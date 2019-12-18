@@ -8,6 +8,11 @@ namespace GsCore.Api.V1
         const string Version = "v{version:apiVersion}";
         const string Base = Root + "/" + Version;
 
+        public static class RootRoute
+        {
+            public const string Root = Base;
+        }
+
         public static class GenresRoute
         {
             public const string BaseUrl = Base + "/genres";
