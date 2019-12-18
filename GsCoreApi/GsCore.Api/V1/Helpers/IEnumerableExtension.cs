@@ -10,13 +10,14 @@ namespace GsCore.Api.V1.Helpers
 {
     /*
      * Author: Harish Chand
-     * Purpose: Data Shaping allows the consumer of the API to choose the resource fields
+     * Purpose: Data Shaping allows the consumer of the API to choose the resource fields.
+     * Collection Resources.
      * (i.e. https://host/api/v1/artists?fields=id,name)
      */
     public static class IEnumerableExtension
     {
         /// <summary>
-        /// ShapeData Extension method on IEnumerable of type TSource (Dtos or entity)
+        /// ShapeData Extension method on IEnumerable of type TSource (Dtos or entity).
         /// </summary>
         /// <typeparam name="TSource"> IEnumerable of type Dto or entity. </typeparam>
         /// <param name="source">IEnumerable of type Dto or entity. </param>

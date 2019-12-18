@@ -121,7 +121,7 @@ namespace GsCore.Api.Services.Repository
 
             if (!string.IsNullOrWhiteSpace(artistResourceParameters.OrderBy)) 
             {
-               //get property mapping dictionary
+               // get property mapping dictionary
                 var artistPropertyMappingDictionary =_propertyMappingService.GetPropertyMapping<ArtistGetResponse, Artist>();
 
                 query=query.ApplySort(artistResourceParameters.OrderBy, artistPropertyMappingDictionary);

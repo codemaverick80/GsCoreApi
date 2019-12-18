@@ -36,22 +36,26 @@ namespace GsCore.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //register propertyMappingService
+            // register propertyMappingService
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             
-            //var gid = Guid.NewGuid();
-            services.AddAutoMapper(typeof(Startup));
+            // register PropertyCheckerService
+            services.AddTransient<IPropertyCheckerService,PropertyCheckerService>();
+
+            // register AutoMapper
+           // services.AddAutoMapper(typeof(Startup)); // OR
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddControllers(setupAction =>
             {
                 setupAction.ReturnHttpNotAcceptable = true;
             })
-            //START - Added NewtonsoftJson for PATCH request
+            // START - Added NewtonsoftJson for PATCH request
             .AddNewtonsoftJson(setupAction =>
             {
                 setupAction.SerializerSettings.ContractResolver=new CamelCasePropertyNamesContractResolver();
             })
-            //END - Added NewtonsoftJson for PATCH request
+            // END - Added NewtonsoftJson for PATCH request
             .AddXmlDataContractSerializerFormatters()
             
             .ConfigureApiBehaviorOptions(setupAction =>

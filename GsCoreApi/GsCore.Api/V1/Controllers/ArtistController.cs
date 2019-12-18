@@ -33,18 +33,22 @@ namespace GsCore.Api.V1.Controllers
         private readonly IArtistRepository _artistRepository;
         private readonly IMapper _mapper;
         private IPropertyMappingService _propertyMappingService;
+        private IPropertyCheckerService _propertyCheckerService;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="artistRepository"></param>
         /// <param name="mapper"></param>
-        public ArtistController(IArtistRepository artistRepository, IMapper mapper, IPropertyMappingService propertyMappingService)
+        public ArtistController(IArtistRepository artistRepository, 
+            IMapper mapper, 
+            IPropertyMappingService propertyMappingService,
+            IPropertyCheckerService propertyCheckerService)
         {
-           
             _artistRepository = artistRepository ?? throw new ArgumentNullException(nameof(artistRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
+            _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyMappingService));
         }
 
         #region "GET Request"
@@ -113,6 +117,14 @@ namespace GsCore.Api.V1.Controllers
                 return BadRequest();
             }
 
+
+            if (!_propertyCheckerService.TypeHasProperties<ArtistGetResponse>(artistResourceParameters.Fields))
+            {
+                return BadRequest();
+            }
+
+
+
             var artistFromRepo = await _artistRepository.GetArtistsAsync(artistResourceParameters);
 
             if (!artistFromRepo.Any())
@@ -156,20 +168,50 @@ namespace GsCore.Api.V1.Controllers
         /// </summary>
         /// <param name="artistId"></param>
         /// <returns></returns>
+      
         /*
          * GET: /api/v{version}/artists/{artistId}
         */
+       
+        //TODO: Delete this once Shape data is completed
+       
+        //[HttpGet(ApiRoutes.ArtistsRoute.Get, Name = "GetArtist")]
+        //public async Task<ActionResult<ArtistGetResponse>> GetArtist(Guid artistId)
+        //{
+
+        //    var artistEntity = await _artistRepository.GetArtistsAsync(artistId);
+        //    if (artistEntity == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(_mapper.Map<ArtistGetResponse>(artistEntity));
+        //}
+
+        /*
+         * GET: /api/v{version}/artists/{artistId}?fields=id,name
+         * https://host/api/v1/artists/72ef801b-43d4-46f1-984e-1d60fc67ca0a?fields=id,name,basicinfo
+        */
+
         [HttpGet(ApiRoutes.ArtistsRoute.Get, Name = "GetArtist")]
-        public async Task<ActionResult<ArtistGetResponse>> GetArtist(Guid artistId)
+        public async Task<ActionResult<ArtistGetResponse>> GetArtist(Guid artistId,string fields)
         {
+            // check if consumer has provided correct fields.
+            // if not return 400 error (Bad Request) instead of 500 error (Server error)
+            
+            if (!_propertyCheckerService.TypeHasProperties<ArtistGetResponse>(fields))
+            {
+                return BadRequest();
+            }
 
             var artistEntity = await _artistRepository.GetArtistsAsync(artistId);
             if (artistEntity == null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<ArtistGetResponse>(artistEntity));
+            return Ok(_mapper.Map<ArtistGetResponse>(artistEntity).ShapeData(fields));
         }
+
+
 
         [HttpGet(ApiRoutes.ArtistsRoute.GetAlbumsByArtist, Name = "GetAlbumByArtist")]
         public async Task<ActionResult<AlbumGetResponse[]>> GetAlbumByArtist(Guid artistId)

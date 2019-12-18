@@ -24,7 +24,7 @@
             
             </summary>
         </member>
-        <member name="M:GsCore.Api.V1.Controllers.ArtistController.#ctor(GsCore.Api.Services.Repository.Interfaces.IArtistRepository,AutoMapper.IMapper,GsCore.Api.Services.IPropertyMappingService)">
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.#ctor(GsCore.Api.Services.Repository.Interfaces.IArtistRepository,AutoMapper.IMapper,GsCore.Api.Services.IPropertyMappingService,GsCore.Api.Services.IPropertyCheckerService)">
             <summary>
             
             </summary>
@@ -37,7 +37,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:GsCore.Api.V1.Controllers.ArtistController.GetArtist(System.Guid)">
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.GetArtist(System.Guid,System.String)">
             <summary>
             
             </summary>
@@ -87,6 +87,15 @@
             NOTE: PUT will update full entity, which is not good if we have lots of fields.
             PATCH is best for partial entity update
         </member>
+        <member name="M:GsCore.Api.V1.Helpers.IEnumerableExtension.ShapeData``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+            <summary>
+            ShapeData Extension method on IEnumerable of type TSource (Dtos or entity).
+            </summary>
+            <typeparam name="TSource"> IEnumerable of type Dto or entity. </typeparam>
+            <param name="source">IEnumerable of type Dto or entity. </param>
+            <param name="fields">Name of fields that API client has requested through query parameter. </param>
+            <returns>IEnumerable of type ExpandoObject. </returns>
+        </member>
         <member name="T:GsCore.Api.V1.Helpers.PagedList`1">
             <summary>
             Reusable PagedList
@@ -101,6 +110,11 @@
             <param name="pageNumber">Page Number</param>
             <param name="pageSize">Page Size</param>
             <returns>PagedList of type entity, Total record count, Page Number and Page Size</returns>
+        </member>
+        <member name="P:GsCore.Api.V1.ResourceParameters.ArtistResourceParameters.Fields">
+            <summary>
+            Comma separated fields name
+            </summary>
         </member>
         <member name="F:GsCore.Api.V2.ApiRoutes.GenresRoute.GetAll">
             <summary>
