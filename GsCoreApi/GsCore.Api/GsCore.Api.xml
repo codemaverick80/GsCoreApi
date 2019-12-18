@@ -24,7 +24,7 @@
             
             </summary>
         </member>
-        <member name="M:GsCore.Api.V1.Controllers.ArtistController.#ctor(GsCore.Api.Services.Repository.Interfaces.IArtistRepository,AutoMapper.IMapper)">
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.#ctor(GsCore.Api.Services.Repository.Interfaces.IArtistRepository,AutoMapper.IMapper,GsCore.Api.Services.IPropertyMappingService)">
             <summary>
             
             </summary>

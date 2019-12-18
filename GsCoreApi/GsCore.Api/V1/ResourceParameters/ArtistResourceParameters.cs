@@ -13,5 +13,11 @@
         }
 
         public string OrderBy { get; set; } = "Name";
+
+        /// <summary>
+        /// Comma separated fields name
+        /// </summary>
+        public string Fields { get; set; }
+
     }
 }

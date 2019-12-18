@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -55,8 +56,55 @@ namespace GsCore.Api.V1.Controllers
         /*
         * GET: /api/v{version}/artists
        */
-        [HttpGet(Name ="GetArtists")]
-        public async Task<ActionResult<ArtistGetResponse[]>> GetArtists([FromQuery] ArtistResourceParameters artistResourceParameters)
+
+        //[HttpGet(Name ="GetArtists")]
+        //public async Task<ActionResult<ArtistGetResponse[]>> GetArtists([FromQuery] ArtistResourceParameters artistResourceParameters)
+        //{
+
+        //    if (!_propertyMappingService.ValidMappingExistsFor<ArtistGetResponse, Artist>(artistResourceParameters
+        //        .OrderBy))
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    var artistFromRepo = await _artistRepository.GetArtistsAsync(artistResourceParameters);
+           
+        //    if (!artistFromRepo.Any())
+        //    {
+        //        return NotFound();
+
+        //    }
+
+        //    #region "Pagination Metadata"
+            
+        //    var previousPageLink = artistFromRepo.HasPrevious ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.PreviousPage): null;
+
+        //    var nextPageLink = artistFromRepo.HasNext ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.NextPage) : null;
+
+        //    var paginationMetadata = new
+        //    {
+        //        totalCount=artistFromRepo.TotalCount,
+        //        pageSize=artistFromRepo.PageSize, 
+        //        currentPage=artistFromRepo.CurrentPage,
+        //        totalPage=artistFromRepo.TotalPages,
+        //        previousPageLink=previousPageLink,
+        //        nextPageLink=nextPageLink
+        //    };
+
+        //    /* Add X-Pagination as response header */
+        //    Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
+        //    #endregion
+
+        //    return Ok(_mapper.Map<ArtistGetResponse[]>(artistFromRepo));
+        //}
+
+
+
+        //// Data Shaping
+        
+        [HttpGet(Name = "GetArtists")]
+        public async Task<ActionResult<IEnumerable<ArtistGetResponse>>> GetArtists([FromQuery] ArtistResourceParameters artistResourceParameters)
         {
 
             if (!_propertyMappingService.ValidMappingExistsFor<ArtistGetResponse, Artist>(artistResourceParameters
@@ -66,7 +114,7 @@ namespace GsCore.Api.V1.Controllers
             }
 
             var artistFromRepo = await _artistRepository.GetArtistsAsync(artistResourceParameters);
-           
+
             if (!artistFromRepo.Any())
             {
                 return NotFound();
@@ -74,19 +122,19 @@ namespace GsCore.Api.V1.Controllers
             }
 
             #region "Pagination Metadata"
-            
-            var previousPageLink = artistFromRepo.HasPrevious ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.PreviousPage): null;
+
+            var previousPageLink = artistFromRepo.HasPrevious ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.PreviousPage) : null;
 
             var nextPageLink = artistFromRepo.HasNext ? CreateArtistsResourceUri(artistResourceParameters, ResourceUriType.NextPage) : null;
 
             var paginationMetadata = new
             {
-                totalCount=artistFromRepo.TotalCount,
-                pageSize=artistFromRepo.PageSize, 
-                currentPage=artistFromRepo.CurrentPage,
-                totalPage=artistFromRepo.TotalPages,
-                previousPageLink=previousPageLink,
-                nextPageLink=nextPageLink
+                totalCount = artistFromRepo.TotalCount,
+                pageSize = artistFromRepo.PageSize,
+                currentPage = artistFromRepo.CurrentPage,
+                totalPage = artistFromRepo.TotalPages,
+                previousPageLink = previousPageLink,
+                nextPageLink = nextPageLink
             };
 
             /* Add X-Pagination as response header */
@@ -94,10 +142,13 @@ namespace GsCore.Api.V1.Controllers
 
             #endregion
 
-            return Ok(_mapper.Map<ArtistGetResponse[]>(artistFromRepo));
+
+
+            return Ok(_mapper.Map<IEnumerable<ArtistGetResponse>>(artistFromRepo)
+                .ShapeData(artistResourceParameters.Fields));
+
         }
 
-        
 
 
         /// <summary>
@@ -447,7 +498,10 @@ namespace GsCore.Api.V1.Controllers
                         pageSize = artistResourceParameters.PageSize,
                         searchQuery = artistResourceParameters.SearchQuery,
                         /* Adding OrderBy Clause to pagination links */
-                        orderBy=artistResourceParameters.OrderBy
+                        orderBy=artistResourceParameters.OrderBy,
+                        /* Adding ShapedData pagination links */
+                        fields = artistResourceParameters.Fields
+
                     });
                 case ResourceUriType.NextPage:
                     return Url.Link("GetArtists", new
@@ -456,7 +510,9 @@ namespace GsCore.Api.V1.Controllers
                         pageSize = artistResourceParameters.PageSize,
                         searchQuery = artistResourceParameters.SearchQuery,
                         /* Adding OrderBy Clause to pagination links */
-                        orderBy = artistResourceParameters.OrderBy
+                        orderBy = artistResourceParameters.OrderBy,
+                        /* Adding ShapedData pagination links */
+                        fields = artistResourceParameters.Fields
                     });
                 default:
                     return Url.Link("GetArtists", new
@@ -465,7 +521,9 @@ namespace GsCore.Api.V1.Controllers
                         pageSize = artistResourceParameters.PageSize,
                         searchQuery = artistResourceParameters.SearchQuery,
                         /* Adding OrderBy Clause to pagination links */
-                        orderBy = artistResourceParameters.OrderBy
+                        orderBy = artistResourceParameters.OrderBy,
+                        /* Adding ShapedData pagination links */
+                        fields = artistResourceParameters.Fields
                     });
             }
         }
