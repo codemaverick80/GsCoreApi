@@ -49,8 +49,13 @@ namespace GsCore.Api.V1.MappingProfiles
             CreateMap<ArtistBasicInfoPutRequest, ArtistBasicInfo>();
 
             CreateMap<ArtistBasicInfoPatchRequest, ArtistBasicInfo>();
-          
 
+
+
+
+            CreateMap<Artist, ArtistGetFullResponse>()
+                .ForMember(dest => dest.UpdatedDate, source => source.MapFrom(src => src.DateModified))
+                .ForMember(dest => dest.BasicInfo, source => source.MapFrom(src => src.ArtistBasicInfo));
         }
 
     }

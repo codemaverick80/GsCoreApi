@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
 
 namespace GsCore.Api.V1.Controllers
 {
@@ -219,13 +220,63 @@ namespace GsCore.Api.V1.Controllers
          * https://host/api/v1/artists/72ef801b-43d4-46f1-984e-1d60fc67ca0a?fields=id,name,basicinfo
         */
 
-        [HttpGet(ApiRoutes.ArtistsRoute.Get, Name = "GetArtist")]
-        public async Task<ActionResult<ArtistGetResponse>> GetArtist(Guid artistId, string fields)
-        {
-            // check if consumer has provided correct fields.
-            // if not return 400 error (Bad Request) instead of 500 error (Server error)
+        //[HttpGet(ApiRoutes.ArtistsRoute.Get, Name = "GetArtist")]
+        //public async Task<ActionResult<ArtistGetResponse>> GetArtist(Guid artistId, 
+        //    string fields,
+        //    [FromHeader(Name = "Accept")] string mediaType)
+        //{
+        //    // check if valid media type is passed
+        //    // MediaType header value defined in  Microsoft.Net.Http.Headers namespace
+        //    if(!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+        //    {
+        //        return BadRequest();
+        //    }
 
-            if (!_propertyCheckerService.TypeHasProperties<ArtistGetResponse>(fields))
+        //    // check if consumer has provided correct fields.
+        //    // if not return 400 error (Bad Request) instead of 500 error (Server error)
+
+        //    if (!_propertyCheckerService.TypeHasProperties<ArtistGetResponse>(fields))
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    var artistEntity = await _artistRepository.GetArtistsAsync(artistId);
+
+        //    if (artistEntity == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (parsedMediaType.MediaType == "application/vnd.musicworld.hateoas+json")
+        //    {
+
+        //     var links = CreateLinksForArtist(artistId, fields);
+
+        //     var linkedResourceToReturn =
+        //        _mapper.Map<ArtistGetResponse>(artistEntity).ShapeData(fields) as IDictionary<string, object>;
+
+        //     linkedResourceToReturn.Add("links", links);
+
+        //     return Ok(linkedResourceToReturn);
+        //    }
+
+        //    return Ok(_mapper.Map<ArtistGetResponse>(artistEntity).ShapeData(fields));
+        //}
+
+        [Produces("application/json",
+            "application/vnd.musicworld.hateoas+json",
+            "application/vnd.musicworld.artist.full+json",
+            "application/vnd.musicworld.artist.full.hateoas+json",
+            "application/vnd.musicworld.artist.friendly+json",
+            "application/vnd.musicworld.artist.friendly.hateoas+json")]
+        [HttpGet(ApiRoutes.ArtistsRoute.Get, Name = "GetArtist")]
+        public async Task<ActionResult> GetArtist(Guid artistId,
+            string fields,
+            [FromHeader(Name = "Accept")] string mediaType)
+        {
+            // check if valid media type is passed
+            // MediaType header value defined in  Microsoft.Net.Http.Headers namespace
+            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
                 return BadRequest();
             }
@@ -237,20 +288,90 @@ namespace GsCore.Api.V1.Controllers
                 return NotFound();
             }
 
+            /*
+             * Accept Header send as : application/vnd.musicworld.artist.friendly.hateoas+json
+             *
+             * SubTypeWithoutSuffix = vnd.musicworld.artist.friendly.hateoas
+             *
+             *  SubTypeWithoutSuffix.Substring(0,parsedMediaType.SubTypeWithoutSuffix.Length - 8) = vnd.musicworld.artist.friendly
+             */
 
-            var links = CreateLinksForArtist(artistId, fields);
+           var includeLinks =
+                parsedMediaType.SubTypeWithoutSuffix.EndsWith("hateoas", StringComparison.InvariantCultureIgnoreCase);
+            
+            IEnumerable<LinkModel> links=new List<LinkModel>();
 
-            var linkedResourceToReturn =
-                _mapper.Map<ArtistGetResponse>(artistEntity).ShapeData(fields) as IDictionary<string, object>;
+            /*
+             * Include links if accept header contains following 
+             * application/vnd.musicworld.hateoas+json
+             * application/vnd.musicworld.artist.full.hateoas+json
+             * application/vnd.musicworld.artist.friendly.hateoas + json
+             */
+            if (includeLinks)
+            {
+                links = CreateLinksForArtist(artistId, fields);
+            }
 
-            linkedResourceToReturn.Add("links", links);
+            var primaryMediaType = includeLinks
+                ? parsedMediaType.SubTypeWithoutSuffix
+                    .Substring(0, parsedMediaType.SubTypeWithoutSuffix.Length - 8)
+                : parsedMediaType.SubTypeWithoutSuffix;
 
-            return Ok(linkedResourceToReturn);
+            // full artist (ArtistGetFullResponse)
+            /*
+            * https://localhost:5001/api/v1/artists/72ef801b-43d4-46f1-984e-1d60fc67ca0a?fields=id,firstname,lastname,basicinfo
+            *        
+            * application/vnd.musicworld.artist.full+json
+            * application/vnd.musicworld.artist.full.hateoas+json
+            *
+            */
+            if (primaryMediaType == "vnd.musicworld.artist.full")
+            {
+                // check if consumer has provided correct fields.
+                // if not return 400 error (Bad Request) instead of 500 error (Server error)
+                if (!_propertyCheckerService.TypeHasProperties<ArtistGetFullResponse>(fields))
+                {
+                    return BadRequest();
+                }
 
-            //return Ok(_mapper.Map<ArtistGetResponse>(artistEntity).ShapeData(fields));
+                var fullResourceToReturn= _mapper.Map<ArtistGetFullResponse>(artistEntity).ShapeData(fields) as IDictionary<string, object>;
+                if (includeLinks)
+                {
+                    fullResourceToReturn.Add("links",links);
+                }
+
+                return Ok(fullResourceToReturn);
+            }
+
+
+            // friendly artist
+            /*
+             * https://localhost:5001/api/v1/artists/72ef801b-43d4-46f1-984e-1d60fc67ca0a?fields=id,name,basicinfo
+             * application/json
+             * application/vnd.musicworld.hateoas+json
+             * application/vnd.musicworld.artist.friendly+json
+             * application/vnd.musicworld.artist.friendly.hateoas+json
+             *
+             */
+
+            // check if consumer has provided correct fields.
+            // if not return 400 error (Bad Request) instead of 500 error (Server error)
+
+            if (!_propertyCheckerService.TypeHasProperties<ArtistGetResponse>(fields))
+            {
+                return BadRequest();
+            }
+           
+            var friendlyResourceToReturn = _mapper.Map<ArtistGetResponse>(artistEntity).ShapeData(fields) as IDictionary<string, object>;
+
+            if (includeLinks)
+            {
+                friendlyResourceToReturn.Add("links",links);
+            }
+
+            return Ok(friendlyResourceToReturn);
+            
         }
-
-
 
         [HttpGet(ApiRoutes.ArtistsRoute.GetAlbumsByArtist, Name = "GetAlbumByArtist")]
         public async Task<ActionResult<AlbumGetResponse[]>> GetAlbumByArtist(Guid artistId)

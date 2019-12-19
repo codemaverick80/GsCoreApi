@@ -37,7 +37,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:GsCore.Api.V1.Controllers.ArtistController.GetArtist(System.Guid,System.String)">
+        <member name="M:GsCore.Api.V1.Controllers.ArtistController.GetArtist(System.Guid,System.String,System.String)">
             <summary>
             
             </summary>
