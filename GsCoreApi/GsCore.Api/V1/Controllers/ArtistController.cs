@@ -303,9 +303,9 @@ namespace GsCore.Api.V1.Controllers
 
             /*
              * Include links if accept header contains following 
-             * application/vnd.musicworld.hateoas+json
-             * application/vnd.musicworld.artist.full.hateoas+json
-             * application/vnd.musicworld.artist.friendly.hateoas + json
+             * Accept: application/vnd.musicworld.hateoas+json
+             * Accept: application/vnd.musicworld.artist.full.hateoas+json
+             * Accept: application/vnd.musicworld.artist.friendly.hateoas + json
              */
             if (includeLinks)
             {
@@ -321,8 +321,8 @@ namespace GsCore.Api.V1.Controllers
             /*
             * https://localhost:5001/api/v1/artists/72ef801b-43d4-46f1-984e-1d60fc67ca0a?fields=id,firstname,lastname,basicinfo
             *        
-            * application/vnd.musicworld.artist.full+json
-            * application/vnd.musicworld.artist.full.hateoas+json
+            * Accept: application/vnd.musicworld.artist.full+json
+            * Accept: application/vnd.musicworld.artist.full.hateoas+json
             *
             */
             if (primaryMediaType == "vnd.musicworld.artist.full")
@@ -347,10 +347,10 @@ namespace GsCore.Api.V1.Controllers
             // friendly artist
             /*
              * https://localhost:5001/api/v1/artists/72ef801b-43d4-46f1-984e-1d60fc67ca0a?fields=id,name,basicinfo
-             * application/json
-             * application/vnd.musicworld.hateoas+json
-             * application/vnd.musicworld.artist.friendly+json
-             * application/vnd.musicworld.artist.friendly.hateoas+json
+             * Accept: application/json
+             * Accept: application/vnd.musicworld.hateoas+json
+             * Accept: application/vnd.musicworld.artist.friendly+json
+             * Accept: application/vnd.musicworld.artist.friendly.hateoas+json
              *
              */
 

@@ -81,17 +81,17 @@ namespace GsCore.Api
                 });
 
 
-            //services.Configure<MvcOptions>(config =>
-            //{
-            //    var newtonsoftJsonOutputFormatter =
-            //        config.OutputFormatters.OfType<NewtonsoftJsonOutputFormatter>()?.FirstOrDefault();
+            ////services.Configure<MvcOptions>(config =>
+            ////{
+            ////    var newtonsoftJsonOutputFormatter =
+            ////        config.OutputFormatters.OfType<NewtonsoftJsonOutputFormatter>()?.FirstOrDefault();
 
-            //    if (newtonsoftJsonOutputFormatter !=null)
-            //    {
-            //        newtonsoftJsonOutputFormatter.SupportedMediaTypes.Add("application/vnd.musicworld.hateoas+json");
-            //    }
+            ////    if (newtonsoftJsonOutputFormatter !=null)
+            ////    {
+            ////        newtonsoftJsonOutputFormatter.SupportedMediaTypes.Add("application/vnd.musicworld.hateoas+json");
+            ////    }
 
-            //});
+            ////});
 
 
             #region "Add Api Versioning Service"
