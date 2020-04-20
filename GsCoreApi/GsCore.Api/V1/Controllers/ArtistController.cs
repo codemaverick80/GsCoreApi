@@ -29,6 +29,7 @@ namespace GsCore.Api.V1.Controllers
     /// </summary>
     [Route(ApiRoutes.ArtistsRoute.BaseUrl)]
     [ApiController]
+   // [ResponseCache(CacheProfileName = "240SecondsCacheProfile")]
     public class ArtistController : ControllerBase
     {
         private readonly IArtistRepository _artistRepository;
@@ -270,9 +271,7 @@ namespace GsCore.Api.V1.Controllers
             "application/vnd.musicworld.artist.friendly+json",
             "application/vnd.musicworld.artist.friendly.hateoas+json")]
         [HttpGet(ApiRoutes.ArtistsRoute.Get, Name = "GetArtist")]
-        public async Task<ActionResult> GetArtist(Guid artistId,
-            string fields,
-            [FromHeader(Name = "Accept")] string mediaType)
+        public async Task<ActionResult> GetArtist(Guid artistId,string fields,[FromHeader(Name = "Accept")] string mediaType)
         {
             // check if valid media type is passed
             // MediaType header value defined in  Microsoft.Net.Http.Headers namespace
@@ -373,7 +372,9 @@ namespace GsCore.Api.V1.Controllers
             
         }
 
+        ////https://localhost:5001/api/v1/artists/99dfc16b-7c75-42da-bcbb-6ae6757d2219/albums
         [HttpGet(ApiRoutes.ArtistsRoute.GetAlbumsByArtist, Name = "GetAlbumByArtist")]
+       // [ResponseCache(Duration = 120)]
         public async Task<ActionResult<AlbumGetResponse[]>> GetAlbumByArtist(Guid artistId)
         {
 

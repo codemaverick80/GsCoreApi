@@ -36,6 +36,13 @@ namespace GsCore.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            // generating ETags for HTTP caching 
+            services.AddHttpCacheHeaders();
+
+            // adding caching store with ResponseCaching Middleware
+            services.AddResponseCaching();
+
             // register propertyMappingService
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             
@@ -49,6 +56,11 @@ namespace GsCore.Api
             services.AddControllers(setupAction =>
             {
                 setupAction.ReturnHttpNotAcceptable = true;
+                setupAction.CacheProfiles.Add("240SecondsCacheProfile",
+                    new CacheProfile()
+                    {
+                        Duration = 240
+                    });
             })
             // START - Added NewtonsoftJson for PATCH request
             .AddNewtonsoftJson(setupAction =>
@@ -221,11 +233,12 @@ namespace GsCore.Api
                 });
             }
 
+            app.UseResponseCaching();
+
+            app.UseHttpCacheHeaders();
 
             app.UseHttpsRedirection();
-
-
-
+            
             #region "Swagger & SwaggerUI middleware"
 
             app.UseSwagger();
